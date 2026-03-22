@@ -292,7 +292,7 @@
     </div>
   </div>
   <div class="header-right">
-    <div class="as-of">As of March 21, 2026</div>
+    <div class="as-of">As of March 22, 2026</div>
   </div>
 </div>
 
@@ -352,7 +352,7 @@
       <div class="kpi-card">
         <div class="kpi-label">No Response / Closed</div>
         <div class="kpi-value" style="color:var(--text2)">39</div>
-        <div class="kpi-sub">25 no response + 14 project didn't move forward</div>
+        <div class="kpi-sub">25 no response · 14 didn't move fwd</div>
       </div>
     </div>
 
@@ -435,7 +435,7 @@
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Pipeline (Weighted)</div>
-        <div class="kpi-value" style="color:var(--accent)">$2.1M</div>
+        <div class="kpi-value" style="color:var(--accent)">$2.2M</div>
         <div class="kpi-sub">Probability-adjusted</div>
       </div>
       <div class="kpi-card">
@@ -496,13 +496,26 @@
   <!-- ======================== SECTORS & GEO ======================== -->
   <div class="panel" id="tab-sectors">
 
+    <div class="card full-width" style="margin-bottom:24px;">
+      <div class="card-title">Project Locations — All Proposals by Metro Area</div>
+      <div class="legend" style="margin-bottom:12px;">
+        <div class="legend-item"><div style="width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0;"></div>1–5 proposals</div>
+        <div class="legend-item"><div style="width:12px; height:12px; border-radius:50%; background:var(--accent); flex-shrink:0;"></div>6–20 proposals</div>
+        <div class="legend-item"><div style="width:16px; height:16px; border-radius:50%; background:var(--accent); flex-shrink:0;"></div>20+ proposals</div>
+      </div>
+      <div style="overflow-x:auto;">
+        <div id="us-map" style="position:relative; display:inline-block;"></div>
+      </div>
+      <div id="map-tooltip" style="display:none; position:fixed; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:8px 12px; font-size:12px; pointer-events:none; z-index:1000;"></div>
+    </div>
+
     <div class="chart-grid">
       <div class="card">
         <div class="card-title">Project Type — Won Fees</div>
         <div id="type-fee-chart" style="padding-top:4px;"></div>
       </div>
       <div class="card">
-        <div class="card-title">Project Type — Win Rate</div>
+        <div class="card-title">Project Type — Win Rate (min. 5 wins)</div>
         <div id="type-wr-chart" style="padding-top:4px;"></div>
       </div>
     </div>
@@ -513,7 +526,7 @@
         <div id="state-fee-chart" style="padding-top:4px;"></div>
       </div>
       <div class="card">
-        <div class="card-title">Geography — Win Rate by State (Top 12)</div>
+        <div class="card-title">Geography — Win Rate by State (min. 2 clients)</div>
         <div id="state-wr-chart" style="padding-top:4px;"></div>
       </div>
     </div>
@@ -580,18 +593,18 @@
     <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Proposals Issued (L12M)</div>
-        <div class="kpi-value kpi-blue">126</div>
+        <div class="kpi-value kpi-blue">123</div>
         <div class="kpi-sub">Apr 2025 – Mar 2026</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Total Fees Proposed (L12M)</div>
-        <div class="kpi-value kpi-amber">$15.4M</div>
+        <div class="kpi-value kpi-amber">$15.0M</div>
         <div class="kpi-sub">All proposals issued in period</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Fees Won (L12M)</div>
-        <div class="kpi-value kpi-green">$6.96M</div>
-        <div class="kpi-sub">62 won proposals</div>
+        <div class="kpi-value kpi-green">$7.24M</div>
+        <div class="kpi-sub">72 won proposals</div>
       </div>
       <div class="kpi-card">
         <div class="kpi-label">Peak Month</div>
@@ -649,6 +662,7 @@
 </div>
 
 <script>
+
 // ===== DATA =====
 const DATA = {
   by_year: [
@@ -656,118 +670,179 @@ const DATA = {
     {year:2023, won:30, lost:22, won_fee:4908100, lost_fee:4977200, win_rate:57.7},
     {year:2024, won:42, lost:34, won_fee:4802609, lost_fee:5457857, win_rate:55.3},
     {year:2025, won:68, lost:16, won_fee:8123925, lost_fee:3108650, win_rate:81.0},
-    {year:2026, won:10, lost:3, won_fee:153050, lost_fee:826000, win_rate:76.9}
+    {year:2026, won:10, lost:3,  won_fee:153050,  lost_fee:826000,  win_rate:76.9}
   ],
   by_type: [
-    {type:'Multi-Family', won:103, lost:56, active:34, won_fee:18430126, win_rate:64.8},
-    {type:'Student Housing', won:18, lost:7, active:3, won_fee:4949200, win_rate:72.0},
-    {type:'Parking Structure', won:6, lost:3, active:1, won_fee:653000, win_rate:66.7},
-    {type:'Office', won:9, lost:10, active:3, won_fee:509500, win_rate:47.4},
-    {type:'Peer Review', won:28, lost:3, active:1, won_fee:343915, win_rate:90.3},
-    {type:'Hospitality', won:7, lost:1, active:2, won_fee:341500, win_rate:87.5},
-    {type:'Retail', won:11, lost:3, active:2, won_fee:177500, win_rate:78.6},
-    {type:'Mixed-Use', won:4, lost:4, active:2, won_fee:57800, win_rate:50.0},
-    {type:'Civil Structure', won:3, lost:0, active:0, won_fee:36500, win_rate:100},
-    {type:'Other', won:5, lost:1, active:3, won_fee:12800, win_rate:83.3}
+    {type:'Multi-Family',      won:103, lost:56, active:34, won_fee:18430126, win_rate:64.8},
+    {type:'Student Housing',   won:18,  lost:7,  active:3,  won_fee:4949200,  win_rate:72.0},
+    {type:'Parking Structure', won:6,   lost:3,  active:1,  won_fee:653000,   win_rate:66.7},
+    {type:'Office',            won:9,   lost:10, active:3,  won_fee:509500,   win_rate:47.4},
+    {type:'Peer Review',       won:28,  lost:3,  active:1,  won_fee:343915,   win_rate:90.3},
+    {type:'Hospitality',       won:7,   lost:1,  active:2,  won_fee:341500,   win_rate:87.5},
+    {type:'Retail',            won:11,  lost:3,  active:2,  won_fee:177500,   win_rate:78.6},
+    {type:'Mixed-Use',         won:4,   lost:4,  active:2,  won_fee:57800,    win_rate:50.0},
+    {type:'Civil Structure',   won:3,   lost:0,  active:0,  won_fee:36500,    win_rate:100},
+    {type:'Other',             won:5,   lost:1,  active:3,  won_fee:12800,    win_rate:83.3},
+    {type:'Senior Living',     won:1,   lost:0,  active:1,  won_fee:1500,     win_rate:100},
+    {type:'Higher Education',  won:1,   lost:0,  active:0,  won_fee:750,      win_rate:100}
   ],
   by_state: [
-    {state:'Texas', won:111, lost:52, active:23, won_fee:12546625, win_rate:68.1},
-    {state:'California', won:18, lost:9, active:3, won_fee:2807337, win_rate:66.7},
-    {state:'Colorado', won:9, lost:3, active:0, won_fee:1863000, win_rate:75.0},
-    {state:'Arizona', won:6, lost:1, active:0, won_fee:1439600, win_rate:85.7},
-    {state:'Massachusetts', won:10, lost:0, active:13, won_fee:1379500, win_rate:100},
-    {state:'Oregon', won:3, lost:0, active:1, won_fee:862000, win_rate:100},
-    {state:'Georgia', won:6, lost:0, active:0, won_fee:794850, win_rate:100},
-    {state:'Louisiana', won:2, lost:0, active:0, won_fee:676700, win_rate:100},
-    {state:'Florida', won:8, lost:2, active:2, won_fee:542700, win_rate:80.0},
-    {state:'Maryland', won:2, lost:1, active:1, won_fee:509000, win_rate:66.7},
-    {state:'Virginia', won:4, lost:1, active:0, won_fee:449000, win_rate:80.0},
-    {state:'Other', won:7, lost:4, active:4, won_fee:1084000, win_rate:63.6}
+    {state:'Texas',         won:111, lost:52, active:23, won_fee:12546625, win_rate:68.1},
+    {state:'California',    won:18,  lost:9,  active:3,  won_fee:2807337,  win_rate:66.7},
+    {state:'Colorado',      won:9,   lost:3,  active:0,  won_fee:1863000,  win_rate:75.0},
+    {state:'Arizona',       won:6,   lost:1,  active:0,  won_fee:1439600,  win_rate:85.7},
+    {state:'Massachusetts', won:10,  lost:0,  active:13, won_fee:1379500,  win_rate:100},
+    {state:'Unknown',       won:7,   lost:4,  active:4,  won_fee:1084000,  win_rate:63.6},
+    {state:'Oregon',        won:3,   lost:0,  active:1,  won_fee:862000,   win_rate:100},
+    {state:'Georgia',       won:6,   lost:0,  active:0,  won_fee:794850,   win_rate:100},
+    {state:'Louisiana',     won:2,   lost:0,  active:0,  won_fee:676700,   win_rate:100},
+    {state:'Florida',       won:8,   lost:2,  active:2,  won_fee:542700,   win_rate:80.0},
+    {state:'Maryland',      won:2,   lost:1,  active:1,  won_fee:509000,   win_rate:66.7},
+    {state:'Virginia',      won:4,   lost:1,  active:0,  won_fee:449000,   win_rate:80.0}
   ],
   by_source: [
-    {source:'Repeat Client', won:135, lost:63, won_fee:18076521, win_rate:68.2},
-    {source:'Referral From Existing Client', won:23, lost:8, won_fee:2874550, win_rate:74.2},
-    {source:'New Client', won:16, lost:2, won_fee:1798500, win_rate:88.9},
-    {source:'Mutual Contact', won:9, lost:7, won_fee:1651000, win_rate:56.2},
-    {source:'Previous Contact / New Firm', won:9, lost:8, won_fee:960920, win_rate:52.9}
+    {source:'Repeat Client',                 won:135, lost:63, won_fee:18076521, win_rate:68.2},
+    {source:'Referral From Existing Client', won:23,  lost:8,  won_fee:2874550,  win_rate:74.2},
+    {source:'New Client',                    won:16,  lost:2,  won_fee:1798500,  win_rate:88.9},
+    {source:'Previous Contact / New Firm',   won:9,   lost:8,  won_fee:960920,   win_rate:52.9},
+    {source:'Mutual Contact',                won:9,   lost:7,  won_fee:1651000,  win_rate:56.2}
   ],
   top_clients: [
-    {client:'The Hanover Company', won:31, lost:1, active:3, won_fee:6423836, win_rate:96.9},
-    {client:'Ziegler Cooper', won:11, lost:8, active:6, won_fee:3702800, win_rate:57.9},
-    {client:'KTGY', won:4, lost:0, active:2, won_fee:1191600, win_rate:100},
-    {client:'Meeks + Partners', won:6, lost:10, active:0, won_fee:1115800, win_rate:37.5},
-    {client:'LV Collective', won:4, lost:4, active:2, won_fee:957000, win_rate:50.0},
-    {client:'Project Solutions, LLC', won:6, lost:2, active:0, won_fee:853000, win_rate:75.0},
-    {client:'Dinerstein', won:5, lost:0, active:1, won_fee:719200, win_rate:100},
-    {client:'Greystar', won:4, lost:0, active:0, won_fee:627820, win_rate:100},
-    {client:'BKR Memorial', won:4, lost:1, active:0, won_fee:620500, win_rate:80.0},
-    {client:'ESG Architecture & Design', won:2, lost:0, active:0, won_fee:563000, win_rate:100},
-    {client:'Preston Partnership', won:2, lost:1, active:1, won_fee:514000, win_rate:66.7},
-    {client:'TCA Architects - Los Angeles', won:1, lost:0, active:0, won_fee:488000, win_rate:100},
-    {client:'Turnkey Lumber Corporations', won:5, lost:1, active:13, won_fee:444500, win_rate:83.3},
-    {client:'Niles Bolton Associates', won:1, lost:2, active:0, won_fee:435000, win_rate:33.3},
-    {client:'Dreamscapes Companies', won:2, lost:0, active:0, won_fee:399000, win_rate:100},
-    {client:'JWDA Architects, Inc.', won:1, lost:0, active:0, won_fee:398000, win_rate:100},
-    {client:'Page Stantec', won:1, lost:1, active:2, won_fee:358000, win_rate:50.0},
-    {client:'GFF', won:1, lost:1, active:0, won_fee:325000, win_rate:50.0},
-    {client:'Cooper Carry Architects', won:1, lost:0, active:0, won_fee:322000, win_rate:100},
-    {client:'Hartshorne Plunkard Architecture', won:1, lost:0, active:0, won_fee:299000, win_rate:100}
+    {client:'The Hanover Company',             won:31, lost:1,  active:3,  won_fee:6423836, win_rate:96.9},
+    {client:'Ziegler Cooper',                  won:11, lost:8,  active:6,  won_fee:3702800, win_rate:57.9},
+    {client:'KTGY',                            won:4,  lost:0,  active:2,  won_fee:1191600, win_rate:100},
+    {client:'Meeks + Partners',                won:6,  lost:10, active:0,  won_fee:1115800, win_rate:37.5},
+    {client:'LV Collective',                   won:4,  lost:4,  active:2,  won_fee:957000,  win_rate:50.0},
+    {client:'Project Solutions, LLC',          won:6,  lost:2,  active:0,  won_fee:853000,  win_rate:75.0},
+    {client:'Dinerstein',                      won:5,  lost:0,  active:1,  won_fee:719200,  win_rate:100},
+    {client:'Greystar',                        won:4,  lost:0,  active:0,  won_fee:627820,  win_rate:100},
+    {client:'BKR Memorial',                    won:4,  lost:1,  active:0,  won_fee:620500,  win_rate:80.0},
+    {client:'ESG Architecture & Design',       won:2,  lost:0,  active:0,  won_fee:563000,  win_rate:100},
+    {client:'Preston Partnership',             won:2,  lost:1,  active:1,  won_fee:514000,  win_rate:66.7},
+    {client:'TCA Architects - Los Angeles',    won:1,  lost:0,  active:0,  won_fee:488000,  win_rate:100},
+    {client:'Turnkey Lumber Corporations',     won:5,  lost:1,  active:13, won_fee:444500,  win_rate:83.3},
+    {client:'Niles Bolton Associates',         won:1,  lost:2,  active:0,  won_fee:435000,  win_rate:33.3},
+    {client:'Dreamscapes Companies',           won:2,  lost:0,  active:0,  won_fee:399000,  win_rate:100},
+    {client:'JWDA Architects, Inc.',           won:1,  lost:0,  active:0,  won_fee:398000,  win_rate:100},
+    {client:'Page Stantec',                    won:1,  lost:1,  active:2,  won_fee:358000,  win_rate:50.0},
+    {client:'GFF',                             won:1,  lost:1,  active:0,  won_fee:325000,  win_rate:50.0},
+    {client:'Cooper Carry Architects',         won:1,  lost:0,  active:0,  won_fee:322000,  win_rate:100},
+    {client:'Hartshorne Plunkard Architecture',won:1,  lost:0,  active:0,  won_fee:299000,  win_rate:100}
   ],
   pipeline: [
-    {name:'LV Collective_Austin Tower', client:'LV Collective', type:'Multi-Family', state:'Texas', fee:799000, weighted:79900, stage:'Issued RFP', due:'12/22/2025', lead:'Stephan'},
-    {name:'Holland Construction_6790 Flanders Drive', client:'Holland Construction', type:'Multi-Family', state:'California', fee:469000, weighted:23450, stage:'Issued RFP', due:'10/8/2024', lead:'Martin'},
-    {name:'ZCA_White Oak Residences (Midway Site)', client:'Ziegler Cooper', type:'Multi-Family', state:'Texas', fee:439500, weighted:21975, stage:'Issued RFP', due:'5/15/2023', lead:'Stephan'},
-    {name:'Page_River Oaks Multifamily Apt Tower Phase I', client:'Page Stantec', type:'Multi-Family', state:'Texas', fee:419000, weighted:104750, stage:'Issued RFP', due:'12/17/2024', lead:'Stephan'},
-    {name:'ZCA_Mill Creek Residential East Riverside', client:'Ziegler Cooper', type:'Multi-Family', state:'Texas', fee:378000, weighted:124740, stage:'Issued RFP', due:'3/4/2026', lead:'Stephan'},
+    {name:'LV Collective_Austin Tower', client:'LV Collective', type:'Multi-Family', state:'Texas', fee:799000, weighted:79900, stage:'Issued RFP', due:'12/23/2025', lead:'Stephan'},
+    {name:'Holland Construction_6790 Flanders Drive', client:'Holland Construction', type:'Multi-Family', state:'California', fee:469000, weighted:23450, stage:'Issued RFP', due:'10/9/2024', lead:'Martin'},
+    {name:'ZCA_White Oak Residences (Midway Site)', client:'Ziegler Cooper', type:'Multi-Family', state:'Texas', fee:439500, weighted:21975, stage:'Issued RFP', due:'5/16/2023', lead:'Stephan'},
+    {name:'Page_River Oaks Multifamily Apt Tower Phase I', client:'Page Stantec', type:'Multi-Family', state:'Texas', fee:419000, weighted:104750, stage:'Issued RFP', due:'12/18/2024', lead:'Stephan'},
+    {name:'ZCA_Mill Creek Residential East Riverside', client:'Ziegler Cooper', type:'Multi-Family', state:'Texas', fee:378000, weighted:124740, stage:'Issued RFP', due:'3/5/2026', lead:'Stephan'},
     {name:'ZCA_UT West Campus Student Housing', client:'Ziegler Cooper', type:'Student Housing', state:'Texas', fee:376000, weighted:124080, stage:'Working on RFP', due:'', lead:'Stephan'},
-    {name:'TDC_Sterling Mizzou', client:'Dinerstein', type:'Student Housing', state:'Missouri', fee:338200, weighted:169100, stage:'Issued RFP', due:'12/3/2025', lead:'Martin'},
-    {name:'HRA_Heights Multifamily', client:'House Robertson Architects', type:'Multi-Family', state:'Texas', fee:336000, weighted:252000, stage:'Issued RFP', due:'1/20/2026', lead:'Rory'},
-    {name:'HCM2-Phase 2 Southern Land Nashville - 5 Over', client:'Hord Coplan Macht', type:'Multi-Family', state:'Tennessee', fee:334000, weighted:110220, stage:'Issued RFP', due:'2/16/2025', lead:'Kenny'},
-    {name:'ZCA_Triten Bissonnet', client:'Ziegler Cooper', type:'Multi-Family', state:'Texas', fee:329000, weighted:16450, stage:'Issued RFP', due:'10/2/2024', lead:'Stephan'},
-    {name:'ZCA_Senior Living', client:'Ziegler Cooper', type:'Senior Living', state:'Texas', fee:327000, weighted:16350, stage:'Issued RFP', due:'10/6/2024', lead:'Stephan'},
-    {name:'HCM2-Phase 1 Southern Land Nashville - CIP 10 Story', client:'Hord Coplan Macht', type:'Multi-Family', state:'Tennessee', fee:319000, weighted:105270, stage:'Issued RFP', due:'2/16/2025', lead:'Kenny'},
-    {name:'WPI_Spanish Oaks', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:266000, weighted:13300, stage:'Issued RFP', due:'11/10/2024', lead:'Stephan'},
-    {name:'WPI_Triten Height', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:264000, weighted:66000, stage:'Issued RFP', due:'11/18/2024', lead:'Stephan'},
-    {name:'WPI_Austin Endeavor Project', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:263000, weighted:13150, stage:'Issued RFP', due:'6/13/2024', lead:'Stephan'},
-    {name:'Preston Partnership_GID Regent Square Block A2', client:'Preston Partnership', type:'Multi-Family', state:'Texas', fee:253000, weighted:83490, stage:'Issued RFP', due:'1/11/2026', lead:'Stephan'},
-    {name:'Page_McCord Retail and Garage', client:'Page Stantec', type:'Mixed-Use', state:'Texas', fee:247000, weighted:61750, stage:'Issued RFP', due:'1/22/2026', lead:'John'},
-    {name:'KTGY_2610 SW Western Blvd', client:'KTGY', type:'Student Housing', state:'Oregon', fee:215000, weighted:70950, stage:'Issued RFP', due:'12/8/2025', lead:'Martin'},
-    {name:'MLA_Baltimore Build Design Garage', client:'Miller, Long & Arnold', type:'Parking Structure', state:'Maryland', fee:164000, weighted:54120, stage:'Issued RFP', due:'2/17/2026', lead:'Stephan'},
-    {name:'DCI_Pearson Grove Residential', client:'Design Collective', type:'Multi-Family', state:'', fee:150000, weighted:75000, stage:'Issued RFP', due:'6/9/2025', lead:'Stephan'},
-    {name:'Turnkey_1 Howard Street Apts', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:118000, weighted:38940, stage:'Issued RFP', due:'2/22/2026', lead:'Stephan'},
-    {name:'Kirksey_Center Point Energy Emergency Backup Building', client:'Kirksey Architecture', type:'Office', state:'Texas', fee:116000, weighted:5800, stage:'Issued RFP', due:'1/16/2025', lead:'Stephan'},
-    {name:'Turnkey_1 Highgate Street', client:'Turnkey Lumber Corporations', type:'Mixed-Use', state:'Massachusetts', fee:104000, weighted:34320, stage:'Issued RFP', due:'10/19/2025', lead:'Stephan'},
+    {name:'TDC_Sterling Mizzou', client:'Dinerstein', type:'Student Housing', state:'Missouri', fee:338200, weighted:169100, stage:'Issued RFP', due:'12/4/2025', lead:'Martin'},
+    {name:'HRA_Heights Multifamily', client:'House Robertson Architects', type:'Multi-Family', state:'Texas', fee:336000, weighted:252000, stage:'Issued RFP', due:'1/21/2026', lead:'Rory'},
+    {name:'HCM2-Phase 2 Southern Land Nashville - 5 Over', client:'Hord Coplan Macht', type:'Multi-Family', state:'Tennessee', fee:334000, weighted:110220, stage:'Issued RFP', due:'2/17/2025', lead:'Kenny'},
+    {name:'ZCA_Triten Bissonnet', client:'Ziegler Cooper', type:'Multi-Family', state:'Texas', fee:329000, weighted:16450, stage:'Issued RFP', due:'10/3/2024', lead:'Stephan'},
+    {name:'ZCA_Senior Living', client:'Ziegler Cooper', type:'Senior Living', state:'Texas', fee:327000, weighted:16350, stage:'Issued RFP', due:'10/7/2024', lead:'Stephan'},
+    {name:'HCM2-Phase 1 Southern Land Nashville - CIP 10 Story', client:'Hord Coplan Macht', type:'Multi-Family', state:'Tennessee', fee:319000, weighted:105270, stage:'Issued RFP', due:'2/17/2025', lead:'Kenny'},
+    {name:'WPI_Spanish Oaks', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:266000, weighted:13300, stage:'Issued RFP', due:'11/11/2024', lead:'Stephan'},
+    {name:'WPI_Triten Height', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:264000, weighted:66000, stage:'Issued RFP', due:'11/19/2024', lead:'Stephan'},
+    {name:'WPI_Austin Endeavor Project', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:263000, weighted:13150, stage:'Issued RFP', due:'6/14/2024', lead:'Stephan'},
+    {name:'Preston Partnership_GID Regent Square Block A2', client:'Preston Partnership', type:'Multi-Family', state:'Texas', fee:253000, weighted:83490, stage:'Issued RFP', due:'1/12/2026', lead:'Stephan'},
+    {name:'Page_McCord Retail and Garage', client:'Page Stantec', type:'Mixed-Use', state:'Texas', fee:247000, weighted:61750, stage:'Issued RFP', due:'1/23/2026', lead:'John'},
+    {name:'KTGY_2610 SW Western Blvd', client:'KTGY', type:'Student Housing', state:'Oregon', fee:215000, weighted:70950, stage:'Issued RFP', due:'12/9/2025', lead:'Martin'},
+    {name:'MLA_Baltimore Build Design Garage', client:'Miller, Long & Arnold', type:'Parking Structure', state:'Maryland', fee:164000, weighted:54120, stage:'Issued RFP', due:'2/18/2026', lead:'Stephan'},
+    {name:'DCI_Pearson Grove Residential', client:'Design Collective', type:'Multi-Family', state:'', fee:150000, weighted:75000, stage:'Issued RFP', due:'6/10/2025', lead:'Stephan'},
+    {name:'Turnkey_1 Howard Street Apts', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:118000, weighted:38940, stage:'Issued RFP', due:'2/23/2026', lead:'Stephan'},
+    {name:'Kirksey_Center Point Energy Emergency Backup Building', client:'Kirksey Architecture', type:'Office', state:'Texas', fee:116000, weighted:5800, stage:'Issued RFP', due:'1/17/2025', lead:'Stephan'},
+    {name:'Turnkey_1 Highgate Street', client:'Turnkey Lumber Corporations', type:'Mixed-Use', state:'Massachusetts', fee:104000, weighted:34320, stage:'Issued RFP', due:'10/20/2025', lead:'Stephan'},
     {name:'Kirksey_MOB Nassau Bay', client:'Kirksey Architecture', type:'Office', state:'Texas', fee:100000, weighted:33000, stage:'Issued RFP', due:'', lead:'Stephan'},
-    {name:'Euclid Ave_Cesar E Chavez Apts', client:'Euclid Avenue Holdings, LLC', type:'Multi-Family', state:'California', fee:98000, weighted:32340, stage:'Issued RFP', due:'2/10/2026', lead:'Martin'},
-    {name:'Hanover_Brandon, FL', client:'The Hanover Company', type:'Multi-Family', state:'Florida', fee:74000, weighted:55500, stage:'Issued RFP', due:'9/9/2025', lead:'Stephan'},
+    {name:'Euclid Ave_Cesar E Chavez Apts', client:'Euclid Avenue Holdings, LLC', type:'Multi-Family', state:'California', fee:98000, weighted:32340, stage:'Issued RFP', due:'2/11/2026', lead:'Martin'},
+    {name:'Hanover_Brandon, FL', client:'The Hanover Company', type:'Multi-Family', state:'Florida', fee:74000, weighted:55500, stage:'Issued RFP', due:'9/10/2025', lead:'Stephan'},
     {name:'ZCA_Lexington Commons MOB', client:'Ziegler Cooper', type:'Office', state:'Texas', fee:73000, weighted:65700, stage:'Issued RFP', due:'', lead:'Stephan'},
-    {name:'Turnkey_235 Third Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:69000, weighted:17250, stage:'Issued RFP', due:'10/19/2025', lead:'Stephan'},
-    {name:'Hanover_Medway', client:'The Hanover Company', type:'Multi-Family', state:'', fee:68000, weighted:51000, stage:'Issued RFP', due:'5/24/2025', lead:'Stephan'},
-    {name:'Hanover_Lakewood Ranch Phase 2', client:'The Hanover Company', type:'Multi-Family', state:'Florida', fee:67000, weighted:67000, stage:'Issued RFP', due:'4/14/2025', lead:'Stephan'},
-    {name:'Investwell - Katy Asian Town', client:'Investwell Architects', type:'Multi-Family', state:'Texas', fee:65000, weighted:65000, stage:'Issued RFP', due:'11/25/2025', lead:'Stephan'},
-    {name:'PVEDI_The Weirton', client:'PVEDI', type:'Multi-Family', state:'Texas', fee:59000, weighted:29500, stage:'Issued RFP', due:'12/18/2025', lead:'Stephan'},
-    {name:'Turnkey_Western Avenue', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:57000, weighted:18810, stage:'Issued RFP', due:'12/14/2025', lead:'Stephan'},
-    {name:'Turnkey_20 Braintreet Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:54000, weighted:17820, stage:'Issued RFP', due:'2/22/2026', lead:'Stephan'},
-    {name:'KTGY_Houston Grand Hotel', client:'KTGY', type:'Hospitality', state:'Illinois', fee:50000, weighted:16500, stage:'Issued RFP', due:'3/4/2026', lead:'Martin'},
-    {name:'Turnkey_330 C Street Hotel', client:'Turnkey Lumber Corporations', type:'Hospitality', state:'Massachusetts', fee:44000, weighted:14520, stage:'Issued RFP', due:'2/22/2026', lead:'Stephan'},
-    {name:'Turnkey_85 Glenville Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:38000, weighted:12540, stage:'Issued RFP', due:'2/22/2026', lead:'Stephan'},
-    {name:'Turnkey_Linden Street Residences', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:37000, weighted:12210, stage:'Issued RFP', due:'10/21/2025', lead:'Stephan'},
-    {name:'W Partnership_Hafer Road', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:36000, weighted:1800, stage:'Issued RFP', due:'8/30/2023', lead:'Stephan'},
-    {name:'Morningstar_9300 Hammerly Self Storage', client:'Morningstar', type:'Other', state:'Texas', fee:35000, weighted:8750, stage:'Issued RFP', due:'3/24/2025', lead:'Stephan'},
-    {name:'Turnkey_114 Orleans Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:35000, weighted:11550, stage:'Issued RFP', due:'1/27/2026', lead:'Stephan'},
-    {name:'Turnkey_358 Chestnut Hill', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:33000, weighted:10890, stage:'Issued RFP', due:'2/22/2026', lead:'Stephan'},
-    {name:'Turnkey_10 Sacramento Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:32000, weighted:10560, stage:'Issued RFP', due:'2/22/2026', lead:'Stephan'},
-    {name:'Turnkey_472 Western Avenue', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:25000, weighted:6250, stage:'Issued RFP', due:'1/27/2026', lead:'Stephan'},
-    {name:'TCA Arch_Diridon West Apt Shell Space Conversion', client:'TCA Architects - Oakland', type:'Multi-Family', state:'California', fee:18900, weighted:6237, stage:'Issued RFP', due:'2/10/2026', lead:'Martin'},
-    {name:'LV Collective_2700 E 5th Street Peer Review', client:'LV Collective', type:'Multi-Family', state:'', fee:18000, weighted:9000, stage:'Issued RFP', due:'9/4/2025', lead:'Stephan'},
-    {name:'STG Design_Kwik Ice PEMB Fdn and Canopy', client:'STG Design', type:'Retail', state:'Texas', fee:10800, weighted:3564, stage:'Issued RFP', due:'10/14/2025', lead:'Jay'},
+    {name:'Turnkey_235 Third Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:69000, weighted:17250, stage:'Issued RFP', due:'10/20/2025', lead:'Stephan'},
+    {name:'Hanover_Medway', client:'The Hanover Company', type:'Multi-Family', state:'', fee:68000, weighted:51000, stage:'Issued RFP', due:'5/25/2025', lead:'Stephan'},
+    {name:'Hanover_Lakewood Ranch Phase 2', client:'The Hanover Company', type:'Multi-Family', state:'Florida', fee:67000, weighted:67000, stage:'Issued RFP', due:'4/15/2025', lead:'Stephan'},
+    {name:'Investwell - Katy Asian Town', client:'Investwell Architects', type:'Multi-Family', state:'Texas', fee:65000, weighted:65000, stage:'Issued RFP', due:'11/26/2025', lead:'Stephan'},
+    {name:'PVEDI_The Weirton', client:'PVEDI', type:'Multi-Family', state:'Texas', fee:59000, weighted:29500, stage:'Issued RFP', due:'12/19/2025', lead:'Stephan'},
+    {name:'Turnkey_Western Avenue', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:57000, weighted:18810, stage:'Issued RFP', due:'12/15/2025', lead:'Stephan'},
+    {name:'Turnkey_20 Braintreet Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:54000, weighted:17820, stage:'Issued RFP', due:'2/23/2026', lead:'Stephan'},
+    {name:'KTGY_Houston Grand Hotel', client:'KTGY', type:'Hospitality', state:'Illinois', fee:50000, weighted:16500, stage:'Issued RFP', due:'3/5/2026', lead:'Martin'},
+    {name:'Turnkey_330 C Street Hotel', client:'Turnkey Lumber Corporations', type:'Hospitality', state:'Massachusetts', fee:44000, weighted:14520, stage:'Issued RFP', due:'2/23/2026', lead:'Stephan'},
+    {name:'Turnkey_85 Glenville Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:38000, weighted:12540, stage:'Issued RFP', due:'2/23/2026', lead:'Stephan'},
+    {name:'Turnkey_Linden Street Residences', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:37000, weighted:12210, stage:'Issued RFP', due:'10/22/2025', lead:'Stephan'},
+    {name:'W Partnership_Hafer Road', client:'W Partnership', type:'Multi-Family', state:'Texas', fee:36000, weighted:1800, stage:'Issued RFP', due:'8/31/2023', lead:'Stephan'},
+    {name:'Morningstar_9300 Hammerly Self Storage', client:'Morningstar', type:'Other', state:'Texas', fee:35000, weighted:8750, stage:'Issued RFP', due:'3/25/2025', lead:'Stephan'},
+    {name:'Turnkey_114 Orleans Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:35000, weighted:11550, stage:'Issued RFP', due:'1/28/2026', lead:'Stephan'},
+    {name:'Turnkey_358 Chestnut Hill', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:33000, weighted:10890, stage:'Issued RFP', due:'2/23/2026', lead:'Stephan'},
+    {name:'Turnkey_10 Sacramento Street', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:32000, weighted:10560, stage:'Issued RFP', due:'2/23/2026', lead:'Stephan'},
+    {name:'Turnkey_472 Western Avenue', client:'Turnkey Lumber Corporations', type:'Multi-Family', state:'Massachusetts', fee:25000, weighted:6250, stage:'Issued RFP', due:'1/28/2026', lead:'Stephan'},
+    {name:'TCA Arch_Diridon West Apt Shell Space Conversion', client:'TCA Architects - Oakland', type:'Multi-Family', state:'California', fee:18900, weighted:6237, stage:'Issued RFP', due:'2/11/2026', lead:'Martin'},
+    {name:'LV Collective_2700 E 5th Street Peer Review', client:'LV Collective', type:'Multi-Family', state:'', fee:18000, weighted:9000, stage:'Issued RFP', due:'9/5/2025', lead:'Stephan'},
+    {name:'STG Design_Kwik Ice PEMB Fdn and Canopy', client:'STG Design', type:'Retail', state:'Texas', fee:10800, weighted:3564, stage:'Issued RFP', due:'10/15/2025', lead:'Jay'},
     {name:'Baker Katz_PlazAmericas Load Checks', client:'Baker Katz', type:'Other', state:'', fee:5000, weighted:2500, stage:'Issued RFP', due:'', lead:'Stephan'},
-    {name:'Gonzalez Group_Ella Springs Seniors Phase 2', client:'The Gonzalez Group LP', type:'Multi-Family', state:'Texas', fee:0, weighted:0, stage:'Issued RFP', due:'3/3/2026', lead:'Stephan'},
-    {name:'Camden_Grove at Shadow Green', client:'Camden', type:'Peer Review', state:'Tennessee', fee:2, weighted:2, stage:'Working on RFP', due:'3/12/2026', lead:'Stephan'},
-    {name:'Baker Katz_PlazAmericas Cooling Tower', client:'Baker Katz', type:'Retail', state:'Texas', fee:2, weighted:0, stage:'Working on RFP', due:'3/12/2026', lead:'Stephan'},
-    {name:'Turnkey_10 Highgate Street', client:'Turnkey Lumber Corporations', type:'Other', state:'Massachusetts', fee:0, weighted:0, stage:'Working on RFP', due:'', lead:'Stephan'}
+    {name:'Camden_Grove at Shadow Green', client:'Camden', type:'Peer Review', state:'Tennessee', fee:2, weighted:2, stage:'Working on RFP', due:'3/13/2026', lead:'Stephan'},
+    {name:'Baker Katz_PlazAmericas Cooling Tower', client:'Baker Katz', type:'Retail', state:'Texas', fee:2, weighted:0, stage:'Working on RFP', due:'3/13/2026', lead:'Stephan'},
+    {name:'Turnkey_10 Highgate Street', client:'Turnkey Lumber Corporations', type:'Other', state:'Massachusetts', fee:0, weighted:0, stage:'Working on RFP', due:'', lead:'Stephan'},
+    {name:'Gonzalez Group_Ella Springs Seniors Phase 2', client:'The Gonzalez Group LP', type:'Multi-Family', state:'Texas', fee:0, weighted:0, stage:'Issued RFP', due:'3/4/2026', lead:'Stephan'}
   ]
 };
+
+// ===== PER-MONTH PROJECT DETAIL DATA =====
+const DETAIL = {
+  issued: [[{"name":"ZCA_Mill Creek Residential East Riverside","fee":378000},{"name":"HKS_Rice Village","fee":335000},{"name":"KTGY_Houston Grand Hotel","fee":50000},{"name":"Camden_Retreat at Nona Place","fee":15600},{"name":"Camden_Artesia Big Creek","fee":15600},{"name":"Camden_Grove at Shadow Green","fee":15600}],[{"name":"Preston_JPI Austin Cedar Park","fee":316000},{"name":"Page Stantec_Trinity Office Bldg & Parking Garage","fee":229000},{"name":"MLA_Baltimore Build Design Garage","fee":164000},{"name":"Turnkey_1 Howard Street Apts","fee":118000},{"name":"Euclid Ave_Cesar E Chavez Apts","fee":98000},{"name":"ZCA_Lexington Commons MOB","fee":73000},{"name":"Sage_Beacon Hill_","fee":59000},{"name":"Turnkey_20 Braintreet Street","fee":54000},{"name":"Turnkey_330 C Street Hotel","fee":44000},{"name":"Turnkey_85 Glenville Street","fee":38000},{"name":"Turnkey_358 Chestnut Hill","fee":33000},{"name":"Turnkey_10 Sacramento Street","fee":32000},{"name":"TCA Arch_Diridon West Apt Shell Space Conversion","fee":18900},{"name":"LK Arch_NW Treatment Facility Structural Support","fee":16500},{"name":"LK Architecture_IHG Army Hotel Bldg 1384 Remodel","fee":14000},{"name":"SPD Construction_Lone Star Chevrolet RTU","fee":5000},{"name":"Urban Genesis_5858 Cunnigham Truck Dock","fee":3000}],[{"name":"HRA_Heights Multifamily","fee":336000},{"name":"Meeks_Weslayan Apartments","fee":281000},{"name":"Preston Partnership_GID Regent Square Block A2","fee":253000},{"name":"Page_McCord Retail and Garage","fee":247000},{"name":"Turnkey_114 Orleans Street","fee":35000},{"name":"Turnkey_472 Western Avenue","fee":25000},{"name":"Turnkey_June Street Townhomes","fee":7000},{"name":"Camden_Buckhead and Phipps","fee":1750}],[{"name":"LV Collective_Austin Tower","fee":799000},{"name":"TDC_Sterling Mizzou","fee":338200},{"name":"ZCA_Tanglewood","fee":254000},{"name":"KTGY_2610 SW Western Blvd","fee":215000},{"name":"PVEDI_The Weirton","fee":59000},{"name":"Turnkey_Western Avenue","fee":57000},{"name":"Turnkey_Wyman","fee":35000},{"name":"Turnkey_Walden","fee":18500},{"name":"Bush Architects_Mount Pleasant Development Phase I","fee":5000},{"name":"ZCA_Sugar Creek Country Club Refresh","fee":500}],[{"name":"Gensler - BKR Office Buidling","fee":377000},{"name":"WPI_High Street FM 1463","fee":76000},{"name":"WPI_High Street Pruitt","fee":72000},{"name":"Investwell - Katy Asian Town","fee":65000},{"name":"Alley Poyner - Brinshore Connect Hillcroft","fee":40000},{"name":"Project Solutions - Galazy II Parking Expansion","fee":27000},{"name":"Harvey Cleary_Lakefront Condo South TH Stairs","fee":4800}],[{"name":"KTGY_1700 S Lamar","fee":396000},{"name":"Preston_GID Block 4 & 5","fee":393000},{"name":"KTGY_16 East University Drive","fee":364000},{"name":"TDC_LSU Southgate Student Housing","fee":337700},{"name":"Turnkey_1 Highgate Street","fee":104000},{"name":"Meeks_Smith Ranch Road","fee":92800},{"name":"W Partnership_Endeavor 410 Pressler","fee":74000},{"name":"Inwood_NW Houston","fee":70000},{"name":"Turnkey_235 Third Street","fee":69000},{"name":"Turnkey_Linden Street Residences","fee":37000},{"name":"Mucasey_OST Lofts","fee":12650},{"name":"STG Design_Kwik Ice PEMB Fdn and Canopy","fee":10800},{"name":"Camden_The Works III at Tillery","fee":10000}],[{"name":"JWDA Architects_The Standard at SDSU","fee":398000},{"name":"Hanover_Boynton Beach Residential Bldg & Parking Structure","fee":385000},{"name":"Sparc+_Advantage BMW Parking Garage","fee":186000},{"name":"Meeks_Marlowe NLV","fee":99600},{"name":"Meeks_Bear Creek Apts","fee":90000},{"name":"Hanover_Brandon, FL","fee":74000},{"name":"LV Collective_Blackburg Peer Review","fee":25000},{"name":"LV Collective_2700 E 5th Street Peer Review","fee":18000},{"name":"Hanover_Trimble Park","fee":6500}],[{"name":"Investwell - Park Central - MF","fee":215000},{"name":"Greystar_Fall Hill","fee":98000},{"name":"Hanover - Sugarloaf","fee":86000},{"name":"Camden_Solaya Site OBS and Review","fee":12900},{"name":"Resolution Builders_Ground Sign","fee":1500}],[{"name":"LV_2700 E 5th Street","fee":340000},{"name":"TCA Architects_Ascent Tucson","fee":279000},{"name":"Conco_Trimble B Design Build Podium Structure","fee":149000},{"name":"Conco_Trimble B Design Build Parking Structure","fee":95000},{"name":"Largo & Bomel & Rise Concrete - Carlsbad DB Garage","fee":69000},{"name":"Camden_New Hope Housing Wheatley","fee":10500},{"name":"Baker Katz_PlazAmericas Load Checks","fee":5000},{"name":"Mark Nolen_Nolen Residence Floor Repair","fee":800},{"name":"Camden_Nations Formwork Submittal Review","fee":550}],[{"name":"TCA Arch_3100 S Figueroa","fee":488000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase II","fee":314000},{"name":"LV Collective_Clemson","fee":298000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase 1","fee":249000},{"name":"House Robertson Arch_Ace+Ivy","fee":198000},{"name":"DCI_Pearson Grove Residential","fee":150000},{"name":"DCI_Pearson Grove Office","fee":116000},{"name":"Investwell_Active Adult Living Baker Cypress","fee":73000},{"name":"Hanover_Medway","fee":68000},{"name":"Jefferson Browne Arch_Hilton Home 2","fee":52000},{"name":"Jefferson Browne Arch_Towne Place Suites","fee":45000},{"name":"Mucasey_New Faith Seniors","fee":26700},{"name":"Mucasey_Andover Village","fee":26000},{"name":"Mucasey_Arbor Vista","fee":20000},{"name":"Lebar (Camden)_Lebar Residence","fee":18200},{"name":"Mucasey_Stella by the Bay","fee":4000},{"name":"CJ Park_Park at Sugar Creek","fee":1000}],[{"name":"LV Collective_Culpepper Phase 2.0","fee":424000},{"name":"Arcquitectonica_Woodlands Residential Tower Narrative","fee":279000},{"name":"Niles Bolton_LV Charlottesville","fee":249000},{"name":"Kraus Holdings_Tradition Hotel","fee":160000},{"name":"Kirksey_Hotel ZaZa Modifications","fee":3000}],[{"name":"Hanover_Greenbriar - Houston","fee":538000},{"name":"Hanover_Carlsbad - San Diego","fee":314000},{"name":"Dakota Enterprises_Dakota Enclave","fee":149000},{"name":"Turnkey_Revington Phase 2","fee":145000},{"name":"Hanover_Lakewood Ranch Phase 1","fee":79000},{"name":"Hanover_Lakewood Ranch Phase 2","fee":67000},{"name":"Dakota Enterprises_Dakota at Kemah","fee":50000},{"name":"Dakota Enterprises_Dakota at Hillcroft","fee":41000},{"name":"Camden_Camp For All Cabins","fee":2575}]],
+  won: [[{"name":"LK Arch_NW Treatment Facility Structural Support","fee":16500},{"name":"Camden_Retreat at Nona Place","fee":15600},{"name":"Camden_Artesia Big Creek","fee":15600},{"name":"Camden_Grove at Shadow Green","fee":15600}],[{"name":"KTGY_1700 S Lamar","fee":396000},{"name":"Sparc+_Advantage BMW Parking Garage","fee":186000},{"name":"WPI_High Street Pruitt","fee":72000},{"name":"Sage_Beacon Hill_","fee":59000},{"name":"Project Solutions - Galazy II Parking Expansion","fee":27000},{"name":"LK Architecture_IHG Army Hotel Bldg 1384 Remodel","fee":14000},{"name":"SPD Construction_Lone Star Chevrolet RTU","fee":5000},{"name":"Urban Genesis_5858 Cunnigham Truck Dock","fee":3000}],[{"name":"ZCA_Tanglewood","fee":254000},{"name":"Camden_The Works III at Tillery","fee":10000},{"name":"Turnkey_June Street Townhomes","fee":7000},{"name":"Camden_Buckhead and Phipps","fee":1750}],[{"name":"House Robertson Arch_Ace+Ivy","fee":198000},{"name":"Meeks_Smith Ranch Road","fee":92800},{"name":"WPI_High Street FM 1463","fee":76000},{"name":"Turnkey_Wyman","fee":35000},{"name":"Turnkey_Walden","fee":18500},{"name":"Bush Architects_Mount Pleasant Development Phase I","fee":5000},{"name":"ZCA_Sugar Creek Country Club Refresh","fee":500}],[{"name":"KTGY_16 East University Drive","fee":364000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase II","fee":314000},{"name":"Inwood_NW Houston","fee":70000},{"name":"Smith & Co_Trinity East Village Phase 2","fee":25000},{"name":"Harvey Cleary_Lakefront Condo South TH Stairs","fee":4800}],[{"name":"JWDA Architects_The Standard at SDSU","fee":398000},{"name":"Preston_GID Block 4 & 5","fee":393000},{"name":"Kraus Holdings_Tradition Hotel","fee":160000},{"name":"Mucasey_OST Lofts","fee":12650},{"name":"Camden_Peer Review Flatirons","fee":6500}],[{"name":"Conco_Trimble B Design Build Podium Structure","fee":149000},{"name":"Greystar_Fall Hill","fee":98000},{"name":"Conco_Trimble B Design Build Parking Structure","fee":95000},{"name":"LV Collective_Blackburg Peer Review","fee":25000},{"name":"Hanover_Trimble Park","fee":6500}],[{"name":"Preston_The Woodlands","fee":121000},{"name":"DCI_Pearson Grove Office","fee":116000},{"name":"Hanover - Sugarloaf","fee":86000},{"name":"Camden_Solaya Site OBS and Review","fee":12900},{"name":"Camden_Camp For All Cabins","fee":2575},{"name":"Resolution Builders_Ground Sign","fee":1500}],[{"name":"TCA Arch_3100 S Figueroa","fee":488000},{"name":"TCA Architects_Ascent Tucson","fee":279000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase 1","fee":249000},{"name":"Camden_New Hope Housing Wheatley","fee":10500},{"name":"Kirksey_Hotel ZaZa Modifications","fee":3000},{"name":"Mark Nolen_Nolen Residence Floor Repair","fee":800}],[{"name":"Thrive Living_11001 W Pico","fee":143000},{"name":"Jefferson Browne Arch_Hilton Home 2","fee":52000},{"name":"Jefferson Browne Arch_Towne Place Suites","fee":45000},{"name":"Mucasey_New Faith Seniors","fee":26700},{"name":"Mucasey_Andover Village","fee":26000},{"name":"Mucasey_Arbor Vista","fee":20000},{"name":"Mucasey_Stella by the Bay","fee":4000},{"name":"CJ Park_Park at Sugar Creek","fee":1000}],[{"name":"Hanover_Greenbriar - Houston","fee":538000},{"name":"LV Collective_Culpepper Phase 2.0","fee":424000},{"name":"Turnkey_Revington Phase 2","fee":145000},{"name":"Dakota Enterprises_Dakota at Kemah","fee":50000},{"name":"Dakota Enterprises_Dakota at Hillcroft","fee":41000},{"name":"Inventure_3663 Washington Ave Tenant Mezzanine","fee":15500},{"name":"Camden_Bayside Clearwater","fee":7700},{"name":"Camden_Camden Atlantic","fee":1500}],[{"name":"Hanover_Carlsbad - San Diego","fee":314000},{"name":"Hanover_Trimble Bldg B & Parking Structure","fee":214000},{"name":"Hanover_Hyannis 2","fee":81000},{"name":"Hanover_Lakewood Ranch Phase 1","fee":79000}]],
+  lost: [[{"name":"Preston_JPI Austin Cedar Park","fee":316000},{"name":"Page Stantec_Trinity Office Bldg & Parking Garage","fee":229000}],[{"name":"Gensler - BKR Office Buidling","fee":377000},{"name":"Meeks_Weslayan Apartments","fee":281000}],[],[{"name":"Hanover_Boynton Beach Residential Bldg & Parking Structure","fee":385000},{"name":"Alley Poyner - Brinshore Connect Hillcroft","fee":40000}],[{"name":"Meeks_Marlowe NLV","fee":99600}],[{"name":"Arcquitectonica_Woodlands Residential Tower Narrative","fee":279000}],[],[{"name":"LV_2700 E 5th Street","fee":340000},{"name":"LV Collective_Clemson","fee":298000},{"name":"Largo & Bomel & Rise Concrete - Carlsbad DB Garage","fee":69000},{"name":"Camden_Nations Formwork Submittal Review","fee":550}],[],[{"name":"Dakota Enterprises_Dakota Enclave","fee":149000}],[{"name":"SCB_Amhearst Rice Village","fee":652000},{"name":"Niles Bolton_LV Charlottesville","fee":249000},{"name":"Keystone_BIM Model for MD Anderson Project","fee":125000},{"name":"Kirksey_Jereh North American Office HQ","fee":79500},{"name":"Investwell Arch_Sky 41 Apts","fee":63000}],[]]
+};
+
+const M_ISSUED = [
+  {label:'Mar 2026', fee:809800,  count:7},  {label:'Feb 2026', fee:1315400, count:17},
+  {label:'Jan 2026', fee:1185750, count:8},  {label:'Dec 2025', fee:1781200, count:10},
+  {label:'Nov 2025', fee:661800,  count:7},  {label:'Oct 2025', fee:1970950, count:14},
+  {label:'Sep 2025', fee:1282100, count:9},  {label:'Aug 2025', fee:413400,  count:5},
+  {label:'Jul 2025', fee:948851,  count:15}, {label:'Jun 2025', fee:2146900, count:17},
+  {label:'May 2025', fee:1115000, count:5},  {label:'Apr 2025', fee:1385575, count:9}
+];
+const M_WON = [
+  {label:'Mar 2026', fee:63300,   count:4},  {label:'Feb 2026', fee:762000,  count:8},
+  {label:'Jan 2026', fee:272750,  count:4},  {label:'Dec 2025', fee:425800,  count:7},
+  {label:'Nov 2025', fee:777800,  count:5},  {label:'Oct 2025', fee:970150,  count:6},
+  {label:'Sep 2025', fee:373500,  count:5},  {label:'Aug 2025', fee:339975,  count:6},
+  {label:'Jul 2025', fee:1030300, count:6},  {label:'Jun 2025', fee:317700,  count:8},
+  {label:'May 2025', fee:1222700, count:9},  {label:'Apr 2025', fee:688000,  count:4}
+];
+const M_LOST = [
+  {label:'Mar 2026', fee:545000,  count:2},  {label:'Feb 2026', fee:658000,  count:2},
+  {label:'Jan 2026', fee:0,       count:0},  {label:'Dec 2025', fee:425000,  count:2},
+  {label:'Nov 2025', fee:99600,   count:1},  {label:'Oct 2025', fee:279000,  count:1},
+  {label:'Sep 2025', fee:0,       count:0},  {label:'Aug 2025', fee:707550,  count:4},
+  {label:'Jul 2025', fee:0,       count:0},  {label:'Jun 2025', fee:149000,  count:1},
+  {label:'May 2025', fee:1168500, count:5},  {label:'Apr 2025', fee:0,       count:0}
+];
+const MAP_CITIES = [
+  {city:"Houston",lat:29.76,lng:-95.37,total:154,won:74},{city:"Austin",lat:30.27,lng:-97.74,total:34,won:22},
+  {city:"Boston",lat:42.36,lng:-71.06,total:23,won:10},{city:"San Jose",lat:37.34,lng:-121.89,total:13,won:4},
+  {city:"Denver",lat:39.74,lng:-104.98,total:12,won:9},{city:"Dallas",lat:32.78,lng:-96.80,total:10,won:5},
+  {city:"San Diego",lat:32.72,lng:-117.16,total:9,won:5},{city:"Los Angeles",lat:34.05,lng:-118.24,total:9,won:5},
+  {city:"Nashville",lat:36.17,lng:-86.78,total:8,won:3},{city:"Phoenix",lat:33.45,lng:-112.07,total:6,won:4},
+  {city:"Atlanta",lat:33.75,lng:-84.39,total:6,won:6},{city:"San Antonio",lat:29.42,lng:-98.49,total:6,won:2},
+  {city:"San Francisco",lat:37.77,lng:-122.42,total:5,won:4},{city:"Washington",lat:38.91,lng:-77.04,total:4,won:4},
+  {city:"Orlando",lat:28.54,lng:-81.38,total:4,won:4},{city:"College Station",lat:30.63,lng:-96.33,total:4,won:4},
+  {city:"Charlotte",lat:35.23,lng:-80.84,total:4,won:3},{city:"Tampa",lat:27.95,lng:-82.46,total:4,won:2},
+  {city:"Baltimore",lat:39.29,lng:-76.61,total:3,won:2},{city:"Eugene",lat:44.05,lng:-123.09,total:3,won:3},
+  {city:"Pittsburgh",lat:40.44,lng:-79.99,total:2,won:1},{city:"Seattle",lat:47.61,lng:-122.33,total:2,won:0},
+  {city:"Baton Rouge",lat:30.45,lng:-91.13,total:2,won:2},{city:"Fort Worth",lat:32.75,lng:-97.33,total:2,won:2},
+  {city:"Sacramento",lat:38.58,lng:-121.49,total:2,won:0},{city:"Detroit",lat:42.33,lng:-83.05,total:1,won:0},
+  {city:"Taylor",lat:30.57,lng:-97.41,total:1,won:0},{city:"San Angelo",lat:31.46,lng:-100.44,total:1,won:0},
+  {city:"West Lafayette",lat:40.43,lng:-86.91,total:1,won:0},{city:"Tyler",lat:32.35,lng:-95.30,total:1,won:0},
+  {city:"Flagstaff",lat:35.20,lng:-111.65,total:1,won:0},{city:"Jacksonville",lat:30.33,lng:-81.66,total:1,won:0},
+  {city:"Ann Arbor",lat:42.28,lng:-83.74,total:1,won:0},{city:"Oklahoma City",lat:35.47,lng:-97.52,total:1,won:0},
+  {city:"Philadelphia",lat:39.95,lng:-75.17,total:1,won:1},{city:"Miami",lat:25.77,lng:-80.19,total:1,won:1},
+  {city:"Charlottesville",lat:38.03,lng:-78.48,total:1,won:0},{city:"Corpus Christi",lat:27.80,lng:-97.40,total:1,won:1},
+  {city:"Clemson",lat:34.68,lng:-82.84,total:1,won:0},{city:"Tucson",lat:32.22,lng:-110.97,total:1,won:1},
+  {city:"Richmond",lat:37.54,lng:-77.44,total:1,won:1},{city:"Fort Lauderdale",lat:26.12,lng:-80.14,total:1,won:0},
+  {city:"Las Vegas",lat:36.17,lng:-115.14,total:1,won:0},{city:"Tempe",lat:33.43,lng:-111.94,total:1,won:1},
+  {city:"Salem",lat:44.94,lng:-123.03,total:1,won:0},{city:"Kansas City",lat:39.10,lng:-94.58,total:1,won:0},
+  {city:"Springfield",lat:37.21,lng:-93.29,total:1,won:1},{city:"Chicago",lat:41.88,lng:-87.63,total:1,won:0}
+];
+const activeBar = { issued: null, won: null, lost: null };
 
 // ===== HELPERS =====
 function fmt(n) {
@@ -775,7 +850,9 @@ function fmt(n) {
   if (n >= 1000) return '$' + (n/1000).toFixed(0) + 'K';
   return '$' + n.toLocaleString();
 }
+
 function fmtFull(n) { return '$' + Math.round(n).toLocaleString(); }
+
 function wrClass(wr) { return wr >= 70 ? 'wr-high' : wr >= 50 ? 'wr-mid' : 'wr-low'; }
 
 // ===== TAB SWITCHING =====
@@ -786,7 +863,6 @@ function showTab(id) {
   event.target.classList.add('active');
 }
 
-// ===== RENDER YEAR COUNT CHART =====
 function renderYearCountChart() {
   const max = Math.max(...DATA.by_year.map(d => d.won + d.lost));
   const el = document.getElementById('year-count-chart');
@@ -807,7 +883,6 @@ function renderYearCountChart() {
   }).join('');
 }
 
-// ===== RENDER YEAR FEE CHART =====
 function renderYearFeeChart() {
   const max = Math.max(...DATA.by_year.map(d => d.won_fee + d.lost_fee));
   const el = document.getElementById('year-fee-chart');
@@ -828,7 +903,6 @@ function renderYearFeeChart() {
   }).join('');
 }
 
-// ===== WIN RATE TREND =====
 function renderWRTrend() {
   const el = document.getElementById('wr-trend-chart');
   el.innerHTML = DATA.by_year.map(d => {
@@ -843,7 +917,6 @@ function renderWRTrend() {
   }).join('');
 }
 
-// ===== GENERIC BAR CHART =====
 function renderBarChart(containerId, data, labelKey, valueKey, maxVal, formatFn) {
   const max = maxVal || Math.max(...data.map(d => d[valueKey]));
   const el = document.getElementById(containerId);
@@ -858,7 +931,6 @@ function renderBarChart(containerId, data, labelKey, valueKey, maxVal, formatFn)
   }).join('');
 }
 
-// ===== PIPELINE TABLE =====
 function renderPipeline() {
   const tbody = document.getElementById('pipeline-tbody');
   const totalWeighted = DATA.pipeline.reduce((s, p) => s + p.weighted, 0);
@@ -876,7 +948,6 @@ function renderPipeline() {
     </tr>`).join('');
 }
 
-// ===== CLIENTS TABLE =====
 function renderClients() {
   const totalWon = DATA.top_clients.reduce((s, c) => s + c.won_fee, 0);
   const tbody = document.getElementById('clients-tbody');
@@ -901,7 +972,6 @@ function renderClients() {
   }).join('');
 }
 
-// ===== SOURCE TABLE =====
 function renderSourceTable() {
   const tbody = document.getElementById('source-tbody');
   tbody.innerHTML = DATA.by_source.map(s => {
@@ -918,16 +988,6 @@ function renderSourceTable() {
     </tr>`;
   }).join('');
 }
-
-// ===== PER-MONTH PROJECT DETAIL DATA =====
-const DETAIL = {
-  issued: [[{"name":"ZCA_Mill Creek Residential East Riverside","fee":378000},{"name":"HKS_Rice Village","fee":335000},{"name":"KTGY_Houston Grand Hotel","fee":50000},{"name":"Camden_Retreat at Nona Place","fee":15600},{"name":"Camden_Artesia Big Creek","fee":15600},{"name":"Camden_Grove at Shadow Green","fee":15600},{"name":"Gonzalez Group_Ella Springs Seniors Phase 2","fee":0}],[{"name":"Preston_JPI Austin Cedar Park","fee":316000},{"name":"Page Stantec_Trinity Office Bldg & Parking Garage","fee":229000},{"name":"MLA_Baltimore Build Design Garage","fee":164000},{"name":"Turnkey_1 Howard Street Apts","fee":118000},{"name":"Euclid Ave_Cesar E Chavez Apts","fee":98000},{"name":"ZCA_Lexington Commons MOB","fee":73000},{"name":"Sage_Beacon Hill_","fee":59000},{"name":"Turnkey_20 Braintreet Street","fee":54000},{"name":"Turnkey_330 C Street Hotel","fee":44000},{"name":"Turnkey_85 Glenville Street","fee":38000},{"name":"Turnkey_358 Chestnut Hill","fee":33000},{"name":"Turnkey_10 Sacramento Street","fee":32000},{"name":"TCA Arch_Diridon West Apt Shell Space Conversion","fee":18900},{"name":"LK Arch_NW Treatment Facility Structural Support","fee":16500},{"name":"LK Architecture_IHG Army Hotel Bldg 1384 Remodel","fee":14000},{"name":"SPD Construction_Lone Star Chevrolet RTU","fee":5000},{"name":"Urban Genesis_5858 Cunnigham Truck Dock","fee":3000}],[{"name":"HRA_Heights Multifamily","fee":336000},{"name":"Meeks_Weslayan Apartments","fee":281000},{"name":"Preston Partnership_GID Regent Square Block A2","fee":253000},{"name":"Page_McCord Retail and Garage","fee":247000},{"name":"Turnkey_114 Orleans Street","fee":35000},{"name":"Turnkey_472 Western Avenue","fee":25000},{"name":"Turnkey_June Street Townhomes","fee":7000},{"name":"Camden_Buckhead and Phipps","fee":1750}],[{"name":"LV Collective_Austin Tower","fee":799000},{"name":"TDC_Sterling Mizzou","fee":338200},{"name":"ZCA_Tanglewood","fee":254000},{"name":"KTGY_2610 SW Western Blvd","fee":215000},{"name":"PVEDI_The Weirton","fee":59000},{"name":"Turnkey_Western Avenue","fee":57000},{"name":"Turnkey_Wyman","fee":35000},{"name":"Turnkey_Walden","fee":18500},{"name":"Bush Architects_Mount Pleasant Development Phase I","fee":5000},{"name":"ZCA_Sugar Creek Country Club Refresh","fee":500}],[{"name":"Gensler - BKR Office Buidling","fee":377000},{"name":"WPI_High Street FM 1463","fee":76000},{"name":"WPI_High Street Pruitt","fee":72000},{"name":"Investwell - Katy Asian Town","fee":65000},{"name":"Alley Poyner - Brinshore Connect Hillcroft","fee":40000},{"name":"Project Solutions - Galazy II Parking Expansion","fee":27000},{"name":"Harvey Cleary_Lakefront Condo South TH Stairs","fee":4800}],[{"name":"KTGY_1700 S Lamar","fee":396000},{"name":"Preston_GID Block 4 & 5","fee":393000},{"name":"KTGY_16 East University Drive","fee":364000},{"name":"TDC_LSU Southgate Student Housing","fee":337700},{"name":"Turnkey_1 Highgate Street","fee":104000},{"name":"Meeks_Smith Ranch Road","fee":92800},{"name":"W Partnership_Endeavor 410 Pressler","fee":74000},{"name":"Inwood_NW Houston","fee":70000},{"name":"Turnkey_235 Third Street","fee":69000},{"name":"Turnkey_Linden Street Residences","fee":37000},{"name":"Mucasey_OST Lofts","fee":12650},{"name":"STG Design_Kwik Ice PEMB Fdn and Canopy","fee":10800},{"name":"Camden_The Works III at Tillery","fee":10000},{"name":"Mark Nolen_Storage Shed","fee":0}],[{"name":"JWDA Architects_The Standard at SDSU","fee":398000},{"name":"Hanover_Boynton Beach Residential Bldg & Parking Structure","fee":385000},{"name":"Sparc+_Advantage BMW Parking Garage","fee":186000},{"name":"Meeks_Marlowe NLV","fee":99600},{"name":"Meeks_Bear Creek Apts","fee":90000},{"name":"Hanover_Brandon, FL","fee":74000},{"name":"LV Collective_Blackburg Peer Review","fee":25000},{"name":"LV Collective_2700 E 5th Street Peer Review","fee":18000},{"name":"Hanover_Trimble Park","fee":6500}],[{"name":"Investwell - Park Central - MF","fee":215000},{"name":"Greystar_Fall Hill","fee":98000},{"name":"Hanover - Sugarloaf","fee":86000},{"name":"Camden_Solaya Site OBS and Review","fee":12900},{"name":"Resolution Builders_Ground Sign","fee":1500}],[{"name":"LV_2700 E 5th Street","fee":340000},{"name":"TCA Architects_Ascent Tucson","fee":279000},{"name":"Conco_Trimble B Design Build Podium Structure","fee":149000},{"name":"Conco_Trimble B Design Build Parking Structure","fee":95000},{"name":"Largo & Bomel & Rise Concrete - Carlsbad DB Garage","fee":69000},{"name":"Camden_New Hope Housing Wheatley","fee":10500},{"name":"Baker Katz_PlazAmericas Load Checks","fee":5000},{"name":"Mark Nolen_Nolen Residence Floor Repair","fee":800},{"name":"Camden_Nations Formwork Submittal Review","fee":550}],[{"name":"TCA Arch_3100 S Figueroa","fee":488000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase II","fee":314000},{"name":"LV Collective_Clemson","fee":298000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase 1","fee":249000},{"name":"House Robertson Arch_Ace+Ivy","fee":198000},{"name":"DCI_Pearson Grove Residential","fee":150000},{"name":"DCI_Pearson Grove Office","fee":116000},{"name":"Investwell_Active Adult Living Baker Cypress","fee":73000},{"name":"Hanover_Medway","fee":68000},{"name":"Jefferson Browne Arch_Hilton Home 2","fee":52000},{"name":"Jefferson Browne Arch_Towne Place Suites","fee":45000},{"name":"Mucasey_New Faith Seniors","fee":26700},{"name":"Mucasey_Andover Village","fee":26000},{"name":"Mucasey_Arbor Vista","fee":20000},{"name":"Lebar (Camden)_Lebar Residence","fee":18200},{"name":"Mucasey_Stella by the Bay","fee":4000},{"name":"CJ Park_Park at Sugar Creek","fee":1000}],[{"name":"Arcquitectonica_Woodlands Residential Tower Narrative","fee":279000},{"name":"Niles Bolton_LV Charlottesville","fee":249000},{"name":"Kraus Holdings_Tradition Hotel","fee":160000},{"name":"Kirksey_Hotel ZaZa Modifications","fee":3000}],[{"name":"Hanover_Greenbriar - Houston","fee":538000},{"name":"LV Collective_Culpepper Phase 2.0","fee":424000},{"name":"Hanover_Carlsbad - San Diego","fee":314000},{"name":"Dakota Enterprises_Dakota Enclave","fee":149000},{"name":"Turnkey_Revington Phase 2","fee":145000},{"name":"Hanover_Lakewood Ranch Phase 1","fee":79000},{"name":"Hanover_Lakewood Ranch Phase 2","fee":67000},{"name":"Dakota Enterprises_Dakota at Kemah","fee":50000},{"name":"Dakota Enterprises_Dakota at Hillcroft","fee":41000}]],
-  won: [[{"name":"LK Arch_NW Treatment Facility Structural Support","fee":16500},{"name":"Camden_Retreat at Nona Place","fee":15600},{"name":"Camden_Artesia Big Creek","fee":15600},{"name":"Camden_Grove at Shadow Green","fee":15600}],[{"name":"KTGY_1700 S Lamar","fee":396000},{"name":"Sparc+_Advantage BMW Parking Garage","fee":186000},{"name":"WPI_High Street Pruitt","fee":72000},{"name":"Sage_Beacon Hill_","fee":59000},{"name":"Project Solutions - Galazy II Parking Expansion","fee":27000},{"name":"LK Architecture_IHG Army Hotel Bldg 1384 Remodel","fee":14000},{"name":"SPD Construction_Lone Star Chevrolet RTU","fee":5000},{"name":"Urban Genesis_5858 Cunnigham Truck Dock","fee":3000}],[{"name":"ZCA_Tanglewood","fee":254000},{"name":"Camden_The Works III at Tillery","fee":10000},{"name":"Turnkey_June Street Townhomes","fee":7000},{"name":"Camden_Buckhead and Phipps","fee":1750}],[{"name":"House Robertson Arch_Ace+Ivy","fee":198000},{"name":"Meeks_Smith Ranch Road","fee":92800},{"name":"WPI_High Street FM 1463","fee":76000},{"name":"Turnkey_Wyman","fee":35000},{"name":"Turnkey_Walden","fee":18500},{"name":"Bush Architects_Mount Pleasant Development Phase I","fee":5000},{"name":"ZCA_Sugar Creek Country Club Refresh","fee":500}],[{"name":"KTGY_16 East University Drive","fee":364000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase II","fee":314000},{"name":"Inwood_NW Houston","fee":70000},{"name":"Smith & Co_Trinity East Village Phase 2","fee":25000},{"name":"Harvey Cleary_Lakefront Condo South TH Stairs","fee":4800}],[{"name":"JWDA Architects_The Standard at SDSU","fee":398000},{"name":"Preston_GID Block 4 & 5","fee":393000},{"name":"Kraus Holdings_Tradition Hotel","fee":160000},{"name":"Mucasey_OST Lofts","fee":12650},{"name":"Camden_Peer Review Flatirons","fee":6500},{"name":"Mark Nolen_Storage Shed","fee":0}],[{"name":"Conco_Trimble B Design Build Podium Structure","fee":149000},{"name":"Greystar_Fall Hill","fee":98000},{"name":"Conco_Trimble B Design Build Parking Structure","fee":95000},{"name":"LV Collective_Blackburg Peer Review","fee":25000},{"name":"Hanover_Trimble Park","fee":6500}],[{"name":"DCI_Pearson Grove Office","fee":116000},{"name":"Hanover - Sugarloaf","fee":86000},{"name":"Camden_Solaya Site OBS and Review","fee":12900},{"name":"Camden_Camp For All Cabins","fee":2575},{"name":"Resolution Builders_Ground Sign","fee":1500}],[{"name":"TCA Arch_3100 S Figueroa","fee":488000},{"name":"TCA Architects_Ascent Tucson","fee":279000},{"name":"ESG Arch_Landmark Prop 1200 Alder Street Phase 1","fee":249000},{"name":"Preston_The Woodlands","fee":121000},{"name":"Camden_New Hope Housing Wheatley","fee":10500},{"name":"Kirksey_Hotel ZaZa Modifications","fee":3000},{"name":"Mark Nolen_Nolen Residence Floor Repair","fee":800}],[{"name":"Thrive Living_11001 W Pico","fee":143000},{"name":"Jefferson Browne Arch_Hilton Home 2","fee":52000},{"name":"Jefferson Browne Arch_Towne Place Suites","fee":45000},{"name":"Mucasey_New Faith Seniors","fee":26700},{"name":"Mucasey_Andover Village","fee":26000},{"name":"Mucasey_Arbor Vista","fee":20000},{"name":"Mucasey_Stella by the Bay","fee":4000},{"name":"CJ Park_Park at Sugar Creek","fee":1000}],[{"name":"LV Collective_Culpepper Phase 2.0","fee":424000},{"name":"Turnkey_Revington Phase 2","fee":145000},{"name":"Dakota Enterprises_Dakota at Kemah","fee":50000},{"name":"Dakota Enterprises_Dakota at Hillcroft","fee":41000},{"name":"Inventure_3663 Washington Ave Tenant Mezzanine","fee":15500},{"name":"Camden_Bayside Clearwater","fee":7700},{"name":"STG-1301 South Lamar Tenant Retrofits","fee":0}],[{"name":"Hanover_Greenbriar - Houston","fee":538000},{"name":"Hanover_Carlsbad - San Diego","fee":314000},{"name":"Hanover_Hyannis 2","fee":81000},{"name":"Hanover_Lakewood Ranch Phase 1","fee":79000},{"name":"Camden_Camden Atlantic","fee":1500}]],
-  lost: [[{"name":"Preston_JPI Austin Cedar Park","fee":316000},{"name":"Page Stantec_Trinity Office Bldg & Parking Garage","fee":229000}],[{"name":"Gensler - BKR Office Buidling","fee":377000},{"name":"Meeks_Weslayan Apartments","fee":281000}],[],[{"name":"Hanover_Boynton Beach Residential Bldg & Parking Structure","fee":385000},{"name":"Alley Poyner - Brinshore Connect Hillcroft","fee":40000}],[{"name":"Meeks_Marlowe NLV","fee":99600}],[{"name":"Arcquitectonica_Woodlands Residential Tower Narrative","fee":279000}],[],[{"name":"LV_2700 E 5th Street","fee":340000},{"name":"LV Collective_Clemson","fee":298000},{"name":"Largo & Bomel & Rise Concrete - Carlsbad DB Garage","fee":69000},{"name":"Camden_Nations Formwork Submittal Review","fee":550}],[],[{"name":"Dakota Enterprises_Dakota Enclave","fee":149000}],[{"name":"Niles Bolton_LV Charlottesville","fee":249000},{"name":"Keystone_BIM Model for MD Anderson Project","fee":125000},{"name":"Kirksey_Jereh North American Office HQ","fee":79500},{"name":"Investwell Arch_Sky 41 Apts","fee":63000}],[{"name":"SCB_Amhearst Rice Village","fee":652000}]]
-};
-
-// Track active selections per chart
-const activeBar = { issued: null, won: null, lost: null };
 
 function showDetail(chartKey, monthIdx, monthLabel, barColor) {
   const panelId = 'detail-' + chartKey;
@@ -984,56 +1044,6 @@ function closeDetail(chartKey) {
   document.getElementById('detail-' + chartKey).style.display = 'none';
   renderMonthlyChart();
 }
-
-
-
-// Chart 1: All proposals issued — date = Date RFP Was Issued
-const M_ISSUED = [
-  {label:'Mar 2026', fee:809800,   count:7},
-  {label:'Feb 2026', fee:1315400,  count:17},
-  {label:'Jan 2026', fee:1185750,  count:8},
-  {label:'Dec 2025', fee:1781200,  count:10},
-  {label:'Nov 2025', fee:661800,   count:7},
-  {label:'Oct 2025', fee:1970950,  count:14},
-  {label:'Sep 2025', fee:1282100,  count:9},
-  {label:'Aug 2025', fee:413400,   count:5},
-  {label:'Jul 2025', fee:948851,   count:15},
-  {label:'Jun 2025', fee:2146900,  count:17},
-  {label:'May 2025', fee:691000,   count:4},
-  {label:'Apr 2025', fee:1807000,  count:9}
-];
-
-// Chart 2: Won proposals — date = Date Decision Was Made
-const M_WON = [
-  {label:'Mar 2026', fee:63300,    count:4},
-  {label:'Feb 2026', fee:762000,   count:8},
-  {label:'Jan 2026', fee:272750,   count:4},
-  {label:'Dec 2025', fee:425800,   count:7},
-  {label:'Nov 2025', fee:777800,   count:5},
-  {label:'Oct 2025', fee:970150,   count:6},
-  {label:'Sep 2025', fee:373500,   count:5},
-  {label:'Aug 2025', fee:218975,   count:5},
-  {label:'Jul 2025', fee:1151300,  count:7},
-  {label:'Jun 2025', fee:317700,   count:8},
-  {label:'May 2025', fee:683200,   count:7},
-  {label:'Apr 2025', fee:1013500,  count:5}
-];
-
-// Chart 3: Lost proposals — date = Date Decision Was Made
-const M_LOST = [
-  {label:'Mar 2026', fee:545000,   count:2},
-  {label:'Feb 2026', fee:658000,   count:2},
-  {label:'Jan 2026', fee:0,        count:0},
-  {label:'Dec 2025', fee:425000,   count:2},
-  {label:'Nov 2025', fee:99600,    count:1},
-  {label:'Oct 2025', fee:279000,   count:1},
-  {label:'Sep 2025', fee:0,        count:0},
-  {label:'Aug 2025', fee:707550,   count:4},
-  {label:'Jul 2025', fee:0,        count:0},
-  {label:'Jun 2025', fee:149000,   count:1},
-  {label:'May 2025', fee:516500,   count:4},
-  {label:'Apr 2025', fee:652000,   count:1}
-];
 
 function renderMonthlyBarChart(containerId, data, barColor, goalFee, chartKey) {
   const barW = 60;
@@ -1126,7 +1136,6 @@ function renderMonthlyChart() {
   renderMonthlyBarChart('chart-lost',   M_LOST,   'var(--red)',    null,     'lost');
 }
 
-
 function renderMonthlyTable() {
   const tbody = document.getElementById('monthly-tbody');
   tbody.innerHTML = M_ISSUED.map((m, i) => {
@@ -1144,6 +1153,112 @@ function renderMonthlyTable() {
   }).join('');
 }
 
+function renderUSMap() {
+  const container = document.getElementById('us-map');
+  container.innerHTML = `<div id="map-loading" style="color:var(--text3);font-size:12px;padding:20px;">Loading map...</div>`;
+
+  // Load D3 and topojson dynamically
+  function loadScript(src, cb) {
+    const s = document.createElement('script');
+    s.src = src; s.onload = cb;
+    document.head.appendChild(s);
+  }
+
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js', () => {
+    loadScript('https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js', () => {
+      fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json')
+        .then(r => r.json())
+        .then(us => {
+          const W = 820, H = 500;
+          const projection = d3.geoAlbersUsa().scale(1060).translate([W/2, H/2]);
+          const path = d3.geoPath().projection(projection);
+
+          const svg = d3.select('#us-map').append('svg')
+            .attr('width', W).attr('height', H)
+            .style('display','block');
+
+          // Background
+          svg.append('rect').attr('width',W).attr('height',H).attr('fill','#161b22').attr('rx',8);
+
+          // States
+          svg.append('g')
+            .selectAll('path')
+            .data(topojson.feature(us, us.objects.states).features)
+            .enter().append('path')
+            .attr('d', path)
+            .attr('fill','#1c2330')
+            .attr('stroke','#374151')
+            .attr('stroke-width', 0.7);
+
+          // State borders
+          svg.append('path')
+            .datum(topojson.mesh(us, us.objects.states, (a,b) => a !== b))
+            .attr('d', path)
+            .attr('fill','none')
+            .attr('stroke','#374151')
+            .attr('stroke-width', 0.7);
+
+          // City dots — sorted small to large so big dots render on top
+          const sorted = [...MAP_CITIES].sort((a,b) => a.total - b.total);
+          const tip = document.getElementById('map-tooltip');
+
+          sorted.forEach(c => {
+            const pos = projection([c.lng, c.lat]);
+            if (!pos) return; // skip if outside projection bounds
+            const r = c.total >= 20 ? 11 : c.total >= 10 ? 8 : c.total >= 5 ? 6 : c.total >= 2 ? 4.5 : 3.5;
+            const wr = c.total > 0 ? c.won / c.total : 0;
+            const color = '#c8a96e';
+
+            svg.append('circle')
+              .attr('cx', pos[0]).attr('cy', pos[1])
+              .attr('r', r)
+              .attr('fill', color)
+              .attr('opacity', 0.9)
+              .attr('stroke','#0d1117')
+              .attr('stroke-width', 1)
+              .style('cursor','pointer')
+              .on('mousemove', (event) => {
+                tip.style.display = 'block';
+                tip.style.left = (event.clientX + 14) + 'px';
+                tip.style.top  = (event.clientY - 40) + 'px';
+                tip.innerHTML = `<span style="color:var(--text);font-weight:600;">${c.city}</span><br>
+                  <span style="color:var(--text2);font-size:11px;">${c.total} proposals &nbsp;·&nbsp; ${c.won} won &nbsp;·&nbsp; ${Math.round(c.won/c.total*100)}% win rate</span>`;
+              })
+              .on('mouseleave', () => { tip.style.display = 'none'; });
+
+            // Label high-volume cities
+            if (c.total >= 8) {
+              svg.append('text')
+                .attr('x', pos[0]).attr('y', pos[1] - r - 4)
+                .attr('text-anchor','middle')
+                .attr('fill','#e6edf3')
+                .attr('font-size', 9)
+                .attr('font-weight', 600)
+                .attr('font-family',"'DM Sans',sans-serif")
+                .attr('pointer-events','none')
+                .text(c.city);
+            }
+          });
+
+          document.getElementById('map-loading') && document.getElementById('map-loading').remove();
+        })
+        .catch(() => {
+          container.innerHTML = `<div style="color:var(--text3);font-size:12px;padding:20px;">Map requires an internet connection to load.</div>`;
+        });
+    });
+  });
+}
+
+function showMapTip(event, text) {
+  const tip = document.getElementById('map-tooltip');
+  const parts = text.split(':');
+  tip.style.display = 'block';
+  tip.style.left = (event.clientX + 14) + 'px';
+  tip.style.top  = (event.clientY - 36) + 'px';
+  tip.innerHTML = `<span style="color:var(--text);font-weight:600;">${parts[0]}</span><br><span style="color:var(--text2);font-size:11px;">${parts[1]}</span>`;
+}
+
+function hideMapTip() { document.getElementById('map-tooltip').style.display='none'; }
 
 window.addEventListener('DOMContentLoaded', () => {
   renderYearCountChart();
@@ -1152,11 +1267,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Type charts
   renderBarChart('type-fee-chart', DATA.by_type, 'type', 'won_fee', null, fmt);
-  renderBarChart('type-wr-chart', DATA.by_type.sort((a,b) => b.win_rate - a.win_rate), 'type', 'win_rate', 100, v => v + '%');
+  renderBarChart('type-wr-chart', DATA.by_type.filter(d => d.won >= 5).sort((a,b) => b.win_rate - a.win_rate), 'type', 'win_rate', 100, v => v + '%');
 
   // State charts
   renderBarChart('state-fee-chart', DATA.by_state, 'state', 'won_fee', null, fmt);
-  renderBarChart('state-wr-chart', DATA.by_state.filter(s => s.won + s.lost >= 3).sort((a,b) => b.win_rate - a.win_rate), 'state', 'win_rate', 100, v => v + '%');
+  const multiClientStates = ['Texas','California','Colorado','Arizona','Georgia','Virginia','Florida','Massachusetts','Pennsylvania','Oregon'];
+  renderBarChart('state-wr-chart', DATA.by_state.filter(s => s.won + s.lost >= 3 && multiClientStates.includes(s.state)).sort((a,b) => b.win_rate - a.win_rate), 'state', 'win_rate', 100, v => v + '%');
+
+  // US Map
+  renderUSMap();
 
   // Source charts
   renderBarChart('source-fee-chart', DATA.by_source, 'source', 'won_fee', null, fmt);
@@ -1179,8 +1298,7 @@ function checkPassword() {
     document.getElementById('pw-input').value = '';
     document.getElementById('pw-input').focus();
   }
-}
-</script>
+}</script></script>
 
 </div><!-- end dashboard-content -->
 </body>
