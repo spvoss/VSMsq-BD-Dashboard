@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Contacts</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --accent: #c9a84c;
+      --accent-dim: rgba(201,168,76,0.15);
+      --text: #e8e8e8;
+      --text-muted: #7a7d8e;
+      --danger: #e05c5c;
+      --success: #4caf7d;
+      --radius: 12px;
+      --input-h: 52px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 16px;
+      min-height: 100dvh;
+      padding: 0 0 80px;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 20px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+
+    header p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 64px;
+      z-index: 9;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      user-select: none;
+    }
+
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .panel { display: none; padding: 20px; }
+    .panel.active { display: block; }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="search"] {
+      width: 100%;
+      height: var(--input-h);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      padding: 0 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .field { margin-bottom: 18px; }
+
+    .btn {
+      width: 100%;
+      height: var(--input-h);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active { transform: scale(0.98); opacity: 0.85; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f1117;
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      width: auto;
+      height: 34px;
+      padding: 0 14px;
+      font-size: 0.82rem;
+      border-radius: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--success);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 100;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.error { background: var(--danger); }
+
+    /* Contact list */
+    .search-wrap { margin-bottom: 16px; position: relative; }
+    .search-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-wrap input { padding-left: 42px; }
+
+    .count {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .contact-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .contact-info { flex: 1; min-width: 0; }
+    .contact-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .contact-phone { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+
+    .empty {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty svg { margin-bottom: 12px; opacity: 0.4; }
+    .empty p { font-size: 0.9rem; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Contacts</h1>
+  <p>Proof of concept &mdash; local storage database</p>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-tab="add">+ Add</div>
+  <div class="tab" data-tab="search">Search</div>
+</div>
+
+<!-- ADD PANEL -->
+<div class="panel active" id="panel-add">
+  <div class="field">
+    <label for="input-name">Full Name</label>
+    <input type="text" id="input-name" placeholder="e.g. Jane Smith" autocomplete="off" />
+  </div>
+  <div class="field">
+    <label for="input-phone">Phone Number</label>
+    <input type="tel" id="input-phone" placeholder="e.g. (555) 867-5309" autocomplete="off" />
+  </div>
+  <button class="btn btn-primary" id="btn-save">Save Contact</button>
+
+  <div class="divider"></div>
+  <div class="section-title">Recently Added</div>
+  <div class="contact-list" id="recent-list"></div>
+</div>
+
+<!-- SEARCH PANEL -->
+<div class="panel" id="panel-search">
+  <div class="search-wrap">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="search" id="input-search" placeholder="Search by name or phone…" autocomplete="off" />
+  </div>
+  <div class="count" id="result-count"></div>
+  <div class="contact-list" id="search-list"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Storage helpers ──────────────────────────────────────────────
+  const DB_KEY = 'contacts_db';
+
+  function loadContacts() {
+    try { return JSON.parse(localStorage.getItem(DB_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveContacts(list) {
+    localStorage.setItem(DB_KEY, JSON.stringify(list));
+  }
+
+  function addContact(name, phone) {
+    const list = loadContacts();
+    const entry = { id: Date.now(), name: name.trim(), phone: phone.trim(), created: new Date().toISOString() };
+    list.unshift(entry);
+    saveContacts(list);
+    return entry;
+  }
+
+  function deleteContact(id) {
+    const list = loadContacts().filter(c => c.id !== id);
+    saveContacts(list);
+  }
+
+  // ── UI helpers ───────────────────────────────────────────────────
+  function initials(name) {
+    return name.split(' ').map(w => w[0] || '').join('').slice(0, 2) || '?';
+  }
+
+  function formatPhone(raw) {
+    const digits = raw.replace(/\D/g, '');
+    if (digits.length === 10)
+      return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+    if (digits.length === 11 && digits[0] === '1')
+      return `+1 (${digits.slice(1,4)}) ${digits.slice(4,7)}-${digits.slice(7)}`;
+    return raw;
+  }
+
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (type ? ' ' + type : '');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  function buildCard(contact, deletable = true) {
+    const card = document.createElement('div');
+    card.className = 'contact-card';
+    card.innerHTML = `
+      <div class="avatar">${initials(contact.name)}</div>
+      <div class="contact-info">
+        <div class="contact-name">${escHtml(contact.name)}</div>
+        <div class="contact-phone">${escHtml(formatPhone(contact.phone))}</div>
+      </div>
+      ${deletable ? `<button class="btn btn-danger" data-id="${contact.id}">Delete</button>` : ''}
+    `;
+    if (deletable) {
+      card.querySelector('.btn-danger').addEventListener('click', () => {
+        deleteContact(contact.id);
+        renderRecent();
+        renderSearch();
+        showToast('Contact deleted', 'error');
+      });
+    }
+    return card;
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Render functions ─────────────────────────────────────────────
+  function renderRecent() {
+    const list = document.getElementById('recent-list');
+    list.innerHTML = '';
+    const contacts = loadContacts().slice(0, 5);
+    if (!contacts.length) {
+      list.innerHTML = `<div class="empty"><p>No contacts yet.</p></div>`;
+      return;
+    }
+    contacts.forEach(c => list.appendChild(buildCard(c)));
+  }
+
+  function renderSearch(query = '') {
+    const list = document.getElementById('search-list');
+    const countEl = document.getElementById('result-count');
+    list.innerHTML = '';
+    const all = loadContacts();
+    const q = query.trim().toLowerCase();
+    const results = q
+      ? all.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q))
+      : all;
+
+    countEl.textContent = q
+      ? `${results.length} result${results.length !== 1 ? 's' : ''} for "${query.trim()}"`
+      : `${all.length} contact${all.length !== 1 ? 's' : ''} total`;
+
+    if (!results.length) {
+      list.innerHTML = `<div class="empty">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <p>${q ? 'No contacts match your search.' : 'No contacts saved yet.'}</p>
+      </div>`;
+      return;
+    }
+    results.forEach(c => list.appendChild(buildCard(c)));
+  }
+
+  // ── Tab switching ─────────────────────────────────────────────────
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const panelId = 'panel-' + tab.dataset.tab;
+      document.getElementById(panelId).classList.add('active');
+      if (tab.dataset.tab === 'search') {
+        renderSearch(document.getElementById('input-search').value);
+        document.getElementById('input-search').focus();
+      }
+    });
+  });
+
+  // ── Save contact ──────────────────────────────────────────────────
+  document.getElementById('btn-save').addEventListener('click', () => {
+    const name = document.getElementById('input-name').value.trim();
+    const phone = document.getElementById('input-phone').value.trim();
+    if (!name) { showToast('Please enter a name.', 'error'); return; }
+    if (!phone) { showToast('Please enter a phone number.', 'error'); return; }
+    addContact(name, phone);
+    document.getElementById('input-name').value = '';
+    document.getElementById('input-phone').value = '';
+    document.getElementById('input-name').focus();
+    renderRecent();
+    showToast('Contact saved!');
+  });
+
+  // Allow Enter key to submit
+  ['input-name','input-phone'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('btn-save').click();
+    });
+  });
+
+  // ── Live search ───────────────────────────────────────────────────
+  document.getElementById('input-search').addEventListener('input', e => {
+    renderSearch(e.target.value);
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────
+  renderRecent();
+  renderSearch();
+</script>
+</body>
+</html>
