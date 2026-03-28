@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Contacts" />
+  <meta name="theme-color" content="#0f1117" />
   <title>Contacts</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -13,83 +17,101 @@
       --border: #2a2d3a;
       --accent: #c9a84c;
       --accent-dim: rgba(201,168,76,0.15);
-      --text: #e8e8e8;
+      --text: #f0f0f0;
       --text-muted: #7a7d8e;
       --danger: #e05c5c;
       --success: #4caf7d;
-      --radius: 12px;
-      --input-h: 52px;
+      --radius: 14px;
+      --input-h: 58px;
+      --btn-h: 58px;
+      --nav-h: 72px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --safe-top: env(safe-area-inset-top, 0px);
+    }
+
+    html, body {
+      height: 100%;
+      overscroll-behavior: none;
     }
 
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      font-size: 16px;
-      min-height: 100dvh;
-      padding: 0 0 80px;
+      font-family: -apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif;
+      font-size: 17px;
+      padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
+      padding-top: var(--safe-top);
     }
 
+    /* ── Header ── */
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 18px 20px 14px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      padding: 20px 20px 16px;
+      text-align: center;
     }
 
     header h1 {
-      font-size: 1.2rem;
-      font-weight: 600;
+      font-size: 1.3rem;
+      font-weight: 700;
       color: var(--accent);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.02em;
     }
 
-    header p {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .tabs {
-      display: flex;
+    /* ── Bottom Nav ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(var(--nav-h) + var(--safe-bottom));
       background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 64px;
-      z-index: 9;
+      border-top: 1px solid var(--border);
+      display: flex;
+      z-index: 20;
+      padding-bottom: var(--safe-bottom);
     }
 
-    .tab {
+    .nav-btn {
       flex: 1;
-      padding: 14px;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
       cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: color 0.2s, border-color 0.2s;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      -webkit-tap-highlight-color: transparent;
       user-select: none;
+      padding-bottom: 4px;
     }
 
-    .tab.active {
+    .nav-btn svg { transition: stroke 0.2s; }
+
+    .nav-btn.active {
       color: var(--accent);
-      border-bottom-color: var(--accent);
     }
 
+    .nav-btn.active svg { stroke: var(--accent); }
+
+    /* ── Panels ── */
     .panel { display: none; padding: 20px; }
     .panel.active { display: block; }
 
+    /* ── Form ── */
+    .field { margin-bottom: 20px; }
+
     label {
       display: block;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-muted);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     input[type="text"],
@@ -98,14 +120,15 @@
       width: 100%;
       height: var(--input-h);
       background: var(--surface);
-      border: 1px solid var(--border);
+      border: 1.5px solid var(--border);
       border-radius: var(--radius);
       color: var(--text);
-      font-size: 1rem;
-      padding: 0 16px;
+      font-size: 1.05rem;
+      padding: 0 18px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
+      appearance: none;
     }
 
     input:focus {
@@ -113,106 +136,101 @@
       box-shadow: 0 0 0 3px var(--accent-dim);
     }
 
-    .field { margin-bottom: 18px; }
-
-    .btn {
+    /* ── Buttons ── */
+    .btn-save {
       width: 100%;
-      height: var(--input-h);
+      height: var(--btn-h);
+      background: var(--accent);
+      color: #0f1117;
       border: none;
       border-radius: var(--radius);
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn-save:active { transform: scale(0.97); opacity: 0.85; }
+
+    .btn-export {
+      width: 100%;
+      height: var(--btn-h);
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      border-radius: var(--radius);
+      color: var(--accent);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.1s;
       -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s, opacity 0.15s, transform 0.1s;
     }
 
-    .btn:active { transform: scale(0.98); opacity: 0.85; }
+    .btn-export:active { transform: scale(0.97); opacity: 0.85; background: var(--accent-dim); }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #0f1117;
-    }
-
-    .btn-danger {
+    .btn-delete {
       background: transparent;
-      border: 1px solid var(--danger);
+      border: 1.5px solid var(--danger);
       color: var(--danger);
-      width: auto;
-      height: 34px;
-      padding: 0 14px;
-      font-size: 0.82rem;
-      border-radius: 8px;
-    }
-
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--success);
-      color: #fff;
-      padding: 12px 22px;
-      border-radius: 30px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      z-index: 100;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
       white-space: nowrap;
-      pointer-events: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s, opacity 0.15s;
     }
 
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
+    .btn-delete:active { background: rgba(224,92,92,0.15); }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 22px 0;
     }
 
-    .toast.error { background: var(--danger); }
-
-    /* Contact list */
-    .search-wrap { margin-bottom: 16px; position: relative; }
-    .search-wrap svg {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
+    /* ── Section title ── */
+    .section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
       color: var(--text-muted);
-      pointer-events: none;
-    }
-    .search-wrap input { padding-left: 42px; }
-
-    .count {
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      margin-bottom: 12px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
     }
 
+    /* ── Contact cards ── */
     .contact-list { display: flex; flex-direction: column; gap: 10px; }
 
     .contact-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 14px 16px;
+      padding: 16px 16px;
       display: flex;
       align-items: center;
       gap: 14px;
       animation: fadeIn 0.2s ease;
     }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
     .avatar {
-      width: 42px;
-      height: 42px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: var(--accent-dim);
-      border: 1px solid var(--accent);
+      border: 1.5px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--accent);
       flex-shrink: 0;
@@ -220,77 +238,95 @@
     }
 
     .contact-info { flex: 1; min-width: 0; }
-    .contact-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .contact-phone { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
 
+    .contact-name {
+      font-weight: 600;
+      font-size: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .contact-phone {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* ── Search ── */
+    .search-wrap { margin-bottom: 16px; position: relative; }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search-wrap input { padding-left: 46px; }
+
+    .count {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    /* ── Empty state ── */
     .empty {
       text-align: center;
-      padding: 48px 20px;
+      padding: 56px 20px;
       color: var(--text-muted);
     }
 
-    .empty svg { margin-bottom: 12px; opacity: 0.4; }
-    .empty p { font-size: 0.9rem; }
+    .empty svg { margin-bottom: 14px; opacity: 0.35; }
+    .empty p { font-size: 0.95rem; line-height: 1.5; }
 
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 20px 0;
-    }
-
-    .btn-export {
-      width: 100%;
-      height: var(--input-h);
-      border: 1px solid var(--accent);
-      border-radius: var(--radius);
-      background: transparent;
-      color: var(--accent);
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: calc(var(--nav-h) + var(--safe-bottom) + 16px);
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: var(--success);
+      color: #fff;
+      padding: 13px 24px;
+      border-radius: 30px;
       font-size: 0.95rem;
       font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s, opacity 0.2s, transform 0.1s;
-      -webkit-tap-highlight-color: transparent;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 100;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
 
-    .btn-export:active { transform: scale(0.98); opacity: 0.85; }
-    .btn-export:hover { background: var(--accent-dim); }
-
-    .section-title {
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast.error { background: var(--danger); }
   </style>
 </head>
 <body>
 
 <header>
   <h1>Contacts</h1>
-  <p>Proof of concept &mdash; local storage database</p>
 </header>
-
-<div class="tabs">
-  <div class="tab active" data-tab="add">+ Add</div>
-  <div class="tab" data-tab="search">Search</div>
-</div>
 
 <!-- ADD PANEL -->
 <div class="panel active" id="panel-add">
   <div class="field">
     <label for="input-name">Full Name</label>
-    <input type="text" id="input-name" placeholder="e.g. Jane Smith" autocomplete="off" />
+    <input type="text" id="input-name" placeholder="e.g. Jane Smith" autocomplete="off" autocorrect="off" />
   </div>
   <div class="field">
     <label for="input-phone">Phone Number</label>
     <input type="tel" id="input-phone" placeholder="e.g. (555) 867-5309" autocomplete="off" />
   </div>
-  <button class="btn btn-primary" id="btn-save">Save Contact</button>
+  <button class="btn-save" id="btn-save">Save Contact</button>
 
   <div class="divider"></div>
-  <button class="btn btn-export" id="btn-export">&#8595; Export Contacts to Spreadsheet</button>
+  <button class="btn-export" id="btn-export">&#8595;&nbsp; Export to Spreadsheet</button>
 
   <div class="divider"></div>
   <div class="section-title">Recently Added</div>
@@ -300,19 +336,49 @@
 <!-- SEARCH PANEL -->
 <div class="panel" id="panel-search">
   <div class="search-wrap">
-    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
-    <input type="search" id="input-search" placeholder="Search by name or phone…" autocomplete="off" />
+    <input type="search" id="input-search" placeholder="Search by name or phone…" autocomplete="off" autocorrect="off" />
   </div>
   <div class="count" id="result-count"></div>
   <div class="contact-list" id="search-list"></div>
 </div>
 
+<!-- ALL CONTACTS PANEL -->
+<div class="panel" id="panel-all">
+  <div class="section-title" id="all-title">All Contacts</div>
+  <div class="contact-list" id="all-list"></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <div class="nav-btn active" data-tab="add">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+    </svg>
+    Add
+  </div>
+  <div class="nav-btn" data-tab="search">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    Search
+  </div>
+  <div class="nav-btn" data-tab="all">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+      <circle cx="9" cy="7" r="4"/>
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+    All
+  </div>
+</nav>
+
 <div class="toast" id="toast"></div>
 
 <script>
-  // ── Storage helpers ──────────────────────────────────────────────
+  // ── Storage ──────────────────────────────────────────────────────
   const DB_KEY = 'contacts_db';
 
   function loadContacts() {
@@ -326,29 +392,28 @@
 
   function addContact(name, phone) {
     const list = loadContacts();
-    const entry = { id: Date.now(), name: name.trim(), phone: phone.trim(), created: new Date().toISOString() };
-    list.unshift(entry);
+    list.unshift({ id: Date.now(), name: name.trim(), phone: phone.trim(), created: new Date().toISOString() });
     saveContacts(list);
-    return entry;
   }
 
   function deleteContact(id) {
-    const list = loadContacts().filter(c => c.id !== id);
-    saveContacts(list);
+    saveContacts(loadContacts().filter(c => c.id !== id));
   }
 
-  // ── UI helpers ───────────────────────────────────────────────────
+  // ── Helpers ──────────────────────────────────────────────────────
   function initials(name) {
     return name.split(' ').map(w => w[0] || '').join('').slice(0, 2) || '?';
   }
 
   function formatPhone(raw) {
-    const digits = raw.replace(/\D/g, '');
-    if (digits.length === 10)
-      return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
-    if (digits.length === 11 && digits[0] === '1')
-      return `+1 (${digits.slice(1,4)}) ${digits.slice(4,7)}-${digits.slice(7)}`;
+    const d = raw.replace(/\D/g, '');
+    if (d.length === 10) return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
+    if (d.length === 11 && d[0] === '1') return `+1 (${d.slice(1,4)}) ${d.slice(4,7)}-${d.slice(7)}`;
     return raw;
+  }
+
+  function esc(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
   function showToast(msg, type = '') {
@@ -359,90 +424,87 @@
     t._timer = setTimeout(() => t.classList.remove('show'), 2600);
   }
 
-  function buildCard(contact, deletable = true) {
+  function buildCard(contact) {
     const card = document.createElement('div');
     card.className = 'contact-card';
     card.innerHTML = `
-      <div class="avatar">${initials(contact.name)}</div>
+      <div class="avatar">${esc(initials(contact.name))}</div>
       <div class="contact-info">
-        <div class="contact-name">${escHtml(contact.name)}</div>
-        <div class="contact-phone">${escHtml(formatPhone(contact.phone))}</div>
+        <div class="contact-name">${esc(contact.name)}</div>
+        <div class="contact-phone">${esc(formatPhone(contact.phone))}</div>
       </div>
-      ${deletable ? `<button class="btn btn-danger" data-id="${contact.id}">Delete</button>` : ''}
+      <button class="btn-delete" data-id="${contact.id}">Delete</button>
     `;
-    if (deletable) {
-      card.querySelector('.btn-danger').addEventListener('click', () => {
-        deleteContact(contact.id);
-        renderRecent();
-        renderSearch();
-        showToast('Contact deleted', 'error');
-      });
-    }
+    card.querySelector('.btn-delete').addEventListener('click', () => {
+      deleteContact(contact.id);
+      renderAll();
+      renderRecent();
+      renderSearch(document.getElementById('input-search').value);
+      showToast('Contact deleted', 'error');
+    });
     return card;
   }
 
-  function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  function emptyState(msg) {
+    return `<div class="empty">
+      <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+      </svg>
+      <p>${msg}</p>
+    </div>`;
   }
 
-  // ── Render functions ─────────────────────────────────────────────
+  // ── Render ───────────────────────────────────────────────────────
   function renderRecent() {
-    const list = document.getElementById('recent-list');
-    list.innerHTML = '';
+    const el = document.getElementById('recent-list');
     const contacts = loadContacts().slice(0, 5);
-    if (!contacts.length) {
-      list.innerHTML = `<div class="empty"><p>No contacts yet.</p></div>`;
-      return;
-    }
-    contacts.forEach(c => list.appendChild(buildCard(c)));
+    el.innerHTML = contacts.length ? '' : emptyState('No contacts yet.');
+    contacts.forEach(c => el.appendChild(buildCard(c)));
+  }
+
+  function renderAll() {
+    const el = document.getElementById('all-list');
+    const title = document.getElementById('all-title');
+    const contacts = loadContacts();
+    title.textContent = `All Contacts (${contacts.length})`;
+    el.innerHTML = contacts.length ? '' : emptyState('No contacts saved yet.');
+    contacts.forEach(c => el.appendChild(buildCard(c)));
   }
 
   function renderSearch(query = '') {
-    const list = document.getElementById('search-list');
+    const el = document.getElementById('search-list');
     const countEl = document.getElementById('result-count');
-    list.innerHTML = '';
     const all = loadContacts();
     const q = query.trim().toLowerCase();
-    const results = q
-      ? all.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q))
-      : all;
-
+    const results = q ? all.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q)) : all;
     countEl.textContent = q
       ? `${results.length} result${results.length !== 1 ? 's' : ''} for "${query.trim()}"`
       : `${all.length} contact${all.length !== 1 ? 's' : ''} total`;
-
-    if (!results.length) {
-      list.innerHTML = `<div class="empty">
-        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <p>${q ? 'No contacts match your search.' : 'No contacts saved yet.'}</p>
-      </div>`;
-      return;
-    }
-    results.forEach(c => list.appendChild(buildCard(c)));
+    el.innerHTML = results.length ? '' : emptyState(q ? 'No contacts match your search.' : 'No contacts saved yet.');
+    results.forEach(c => el.appendChild(buildCard(c)));
   }
 
-  // ── Tab switching ─────────────────────────────────────────────────
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  // ── Navigation ───────────────────────────────────────────────────
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      tab.classList.add('active');
-      const panelId = 'panel-' + tab.dataset.tab;
-      document.getElementById(panelId).classList.add('active');
-      if (tab.dataset.tab === 'search') {
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      if (btn.dataset.tab === 'search') {
         renderSearch(document.getElementById('input-search').value);
-        document.getElementById('input-search').focus();
+        setTimeout(() => document.getElementById('input-search').focus(), 100);
       }
+      if (btn.dataset.tab === 'all') renderAll();
     });
   });
 
-  // ── Save contact ──────────────────────────────────────────────────
+  // ── Save ─────────────────────────────────────────────────────────
   document.getElementById('btn-save').addEventListener('click', () => {
     const name = document.getElementById('input-name').value.trim();
     const phone = document.getElementById('input-phone').value.trim();
-    if (!name) { showToast('Please enter a name.', 'error'); return; }
+    if (!name)  { showToast('Please enter a name.', 'error'); return; }
     if (!phone) { showToast('Please enter a phone number.', 'error'); return; }
     addContact(name, phone);
     document.getElementById('input-name').value = '';
@@ -452,19 +514,18 @@
     showToast('Contact saved!');
   });
 
-  // Allow Enter key to submit
-  ['input-name','input-phone'].forEach(id => {
+  ['input-name', 'input-phone'].forEach(id => {
     document.getElementById(id).addEventListener('keydown', e => {
       if (e.key === 'Enter') document.getElementById('btn-save').click();
     });
   });
 
-  // ── Live search ───────────────────────────────────────────────────
+  // ── Search ───────────────────────────────────────────────────────
   document.getElementById('input-search').addEventListener('input', e => {
     renderSearch(e.target.value);
   });
 
-  // ── Export to CSV ─────────────────────────────────────────────────
+  // ── Export CSV ───────────────────────────────────────────────────
   document.getElementById('btn-export').addEventListener('click', () => {
     const contacts = loadContacts();
     if (!contacts.length) { showToast('No contacts to export.', 'error'); return; }
@@ -485,7 +546,7 @@
     showToast('Exported ' + contacts.length + ' contact' + (contacts.length !== 1 ? 's' : '') + '!');
   });
 
-  // ── Init ──────────────────────────────────────────────────────────
+  // ── Init ─────────────────────────────────────────────────────────
   renderRecent();
   renderSearch();
 </script>
