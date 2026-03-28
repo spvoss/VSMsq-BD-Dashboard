@@ -238,6 +238,23 @@
       margin: 20px 0;
     }
 
+    .btn-export {
+      width: 100%;
+      height: var(--input-h);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--accent);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-export:active { transform: scale(0.98); opacity: 0.85; }
+    .btn-export:hover { background: var(--accent-dim); }
+
     .section-title {
       font-size: 0.78rem;
       font-weight: 600;
@@ -271,6 +288,9 @@
     <input type="tel" id="input-phone" placeholder="e.g. (555) 867-5309" autocomplete="off" />
   </div>
   <button class="btn btn-primary" id="btn-save">Save Contact</button>
+
+  <div class="divider"></div>
+  <button class="btn btn-export" id="btn-export">&#8595; Export Contacts to Spreadsheet</button>
 
   <div class="divider"></div>
   <div class="section-title">Recently Added</div>
@@ -442,6 +462,27 @@
   // ── Live search ───────────────────────────────────────────────────
   document.getElementById('input-search').addEventListener('input', e => {
     renderSearch(e.target.value);
+  });
+
+  // ── Export to CSV ─────────────────────────────────────────────────
+  document.getElementById('btn-export').addEventListener('click', () => {
+    const contacts = loadContacts();
+    if (!contacts.length) { showToast('No contacts to export.', 'error'); return; }
+    const rows = [['Name', 'Phone', 'Date Added']];
+    contacts.forEach(c => rows.push([
+      '"' + c.name.replace(/"/g, '""') + '"',
+      '"' + c.phone.replace(/"/g, '""') + '"',
+      '"' + new Date(c.created).toLocaleDateString() + '"'
+    ]));
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'contacts.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Exported ' + contacts.length + ' contact' + (contacts.length !== 1 ? 's' : '') + '!');
   });
 
   // ── Init ──────────────────────────────────────────────────────────
